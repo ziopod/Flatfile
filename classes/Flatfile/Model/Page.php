@@ -20,6 +20,12 @@ class Flatfile_Model_Page extends Flatfile {
 				array('Markdown'),
 				array('SmartyPants'),
 			),
+			'credit' => array(
+				array('json_decode'),
+			),
+			'license' => array(
+				array('json_decode'),
+			),
 		);
 	}
 	
