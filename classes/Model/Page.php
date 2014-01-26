@@ -1,3 +1,3 @@
 <?php defined('SYSPATH') OR die ('No direct script access');
 
-class Flatfile extends Flatfile_Core {}
+class Model_Page extends Flatfile_Model_Page {}

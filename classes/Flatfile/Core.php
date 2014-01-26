@@ -8,4 +8,357 @@
 * @license		http://opensource.org/licenses/mit-license.php
 **/
 
-class Flatfile_Core {}
+class Flatfile_Core {
+	
+	/**
+	* @var	string	Type of Flatfile Model
+	**/
+	protected $_type;
+
+	/**
+	* @var	string	Path to the folder which contain files
+	*/
+	protected $_path; 
+
+	/**
+	* @var	string	Slug
+	**/
+	protected $_slug;
+
+	/**
+	* @var	array	For storing file data
+	**/
+	protected $_data = array();
+
+	/**
+	* @var	string	Filename
+	**/
+	public $filename;
+
+	const METAS_SEPARATOR = '---';
+
+	/**
+	* Return a model of the model na provided. You can spacify an file 
+	* slug (file name base) for load or create o specifque file model
+	*
+	*		$post = Flatfile::factory('Post', 'my-lovely-post');
+	*
+	* @chainable
+	* @param	string	The model name
+	* @param	string	A specific slug
+	*
+	* @return	object
+	*/	
+	public static function factory($model, $slug = NULL)
+	{
+		$model = 'Model_' . ucfirst($model);
+		return new $model($slug);
+	}
+
+
+	/**
+	* Construct empty model or try to fetch specific file when slug are provided
+	*
+	*		$post = new Post_Model('my-lovely-post');
+	*
+	* @param	string	A specific slug
+	*/
+	public function __construct($slug = NULL)
+	{
+		// Get subfolders
+		$sub_folders = explode('/', $slug);
+		// Get slug part
+		$slug = array_pop($sub_folders);
+		// Store subfolders
+		if (! empty($sub_folders))
+			$sub_folders = implode(DIRECTORY_SEPARATOR, $sub_folders);
+
+		// Store type
+		$this->_type = strtolower(substr(get_class($this), 6));
+		// Store folder path
+		$this->_path = Inflector::plural($this->_type) . DIRECTORY_SEPARATOR;
+		
+		if ($sub_folders)
+			$this->_path .= $sub_folders . DIRECTORY_SEPARATOR;
+
+		// Trying to load Flatile if slug is provided
+		if ($slug !== NULL)
+		{
+			$this->_slug = $slug;
+			$this->slug = $slug; // Store slug in _data array
+			// A slug spécified, automaticly find file
+			$this->find();
+		}
+
+	}
+
+	// Return content
+	public function content()
+	{
+		return $this->content;
+	}
+	// public function content()
+	// {
+	// 	$this->__set('content', $this->content);
+	// }
+
+
+	/**
+	* Find file an load data
+	**/
+	public function find()
+	{
+		// Constant STATE_LOADING
+		// Try to load file data
+		$this->_load();
+	}
+
+	/**
+	* Load data
+	**/
+	protected function _load($multiple = FALSE)
+	{
+		if ($multiple === TRUE)
+		{
+
+		}
+
+		if ($this->_slug)
+		{
+			// Strore filename
+			$this->filename = $this->_get_files($this->_slug);
+
+			if ($this->filename)
+			{
+				// Parse meta data from markdown file
+				$this->_parse_meta();
+			}
+			else
+			{
+				// Throw exception, Unable to find markdown file
+			}
+		}
+		else
+		{
+			// Throw exception, No slug secified
+		}
+	}
+
+	/**
+	* Retreive all files or one file base on slug
+	**/
+	protected function _get_files($slug = NULL)
+	{
+		// Get markdown file by slug
+		if ($slug !== NULL)
+			return Kohana::find_file('content', $this->_path . $this->_slug, 'md');
+	}
+
+
+	/**
+	* Parse meta data from Markdown file
+	**/
+	protected function _parse_meta()
+	{
+		// Open file in read mode
+		$file = fopen(Kohana::find_file('content', $this->_path . $this->_slug, 'md'), 'r');
+
+		// Scan each line
+		while ($line = fgets($file))
+		{
+			// Ending metas zone, load content
+			if (strpos($line, Flatfile::METAS_SEPARATOR) !== FALSE)
+				break;
+
+			if (($index = strpos($line, ':')) !== FALSE) // Get new property
+			{
+				$property = strtolower(substr($line, 0, $index));
+
+				// Preserve slug
+				if ($property == 'slug')
+					continue;
+
+				// Inititate new property
+				$this->$property = NULL;
+				// Get first value part
+				$newline = substr($line, $index + 1);
+			}
+			else // Store value
+			{
+				// Preserve slug
+				if ($property == 'slug')
+					continue;
+
+				// Adding value
+				$newline .= $line;
+			}
+
+			// Store property value
+			$this->$property = trim($newline);
+		}
+
+		// Close file
+		fclose($file);
+	}
+
+	/**
+	* Parse content from Markdown file
+	**/
+	protected function _parse_content()
+	{
+		$file = Kohana::find_file('content', $this->_path . $this->_slug, 'md');
+		$skip_metas = TRUE;
+		$headline = ''; // Flatfile::CONTENT_HEADLINE_SEPARATOR = <!--more-->
+		$content = '';
+
+		foreach (new SplFileObject($file) as $line)
+		{
+			if ($skip_metas)
+			{
+				if (strpos($line, Flatfile::METAS_SEPARATOR) !== FALSE)
+					$skip_metas = FALSE;
+			}
+			else
+			{
+				$content .= $line;
+			}
+		}
+
+		$content = SmartyPants(Markdown($content));
+		return $content;
+
+	}
+
+	/**
+	* Define filter
+	* **Inspire by Kohana ORM::run_filter()**
+	**/
+	public function filters()
+	{
+		return array();
+	}
+
+	/**
+	* Filters a value for a specific property
+	* **Inspire by Kohana ORM::run_filter()**
+	*
+	* @param	string	Property name
+	* @param	string	Value to filter
+	**/
+	protected function _run_filter($property, $value)
+	{
+		$filters = $this->filters();
+		// Get filters fot this property
+		$wildcards = empty($filters[TRUE]) ? array() : $filters[TRUE];
+		// Merge in the wildcards
+		$filters = empty($filters[$property]) ? $wildcards : array_merge($wildcards, $filters[$property]);
+		// Bind the property an model
+		$_bound = array(
+			':property'	=> $property,
+			':model'	=> $this,
+		);
+
+		foreach ($filters as $array)
+		{
+			$_bound[':value'] = $value;
+			$filter = $array[0];
+			$params= Arr::get($array, 1, array(':value'));
+
+			foreach ($params as $key => $param)
+			{
+				if (is_string($param) AND array_key_exists($param, $_bound))
+					// Replace with bound value
+					$params[$key] = $_bound[$param];
+			}
+
+			if (is_array($filter) OR ! is_string($filter))
+			{
+				// Callback as an array or a lambda
+				$value = call_user_func_array($filter, $params);
+			}
+			elseif (strpos($filter, '::') === FALSE)
+			{
+				// Use a function call
+				$function = new ReflectionFunction($filter);
+				// Call $function($this[$property], $param, …) With Reflection
+				$value = $function->invokeArgs($params);
+			}
+			else
+			{
+				// Split the class and method of the rule
+				list($class, $method) = explode('::', $filter, 2);
+				// Use static method call
+				$method = new ReflectionMethod($class, $method);
+				// Class $class::$method($this[$property], $param, …) with Reflection
+				$value = $method->invokeArgs(NULL, $params);
+			}
+		}
+
+		return $value;
+	}
+
+	/**
+	* Somes filters
+	**/
+	public static function str_to_list($str)
+	{
+		$tags = array();
+
+		foreach (explode(', ', $str) as $tag)
+		{
+			$tags[] = array(
+				'name'	=> $tag,
+				'slug'	=> URL::title($tag),
+			);
+		}
+
+		return $tags;
+	}
+
+
+	/**
+	* Set value in data array
+	*
+	* @return	void
+	**/
+	public function __set($key, $value)
+	{
+		// Call _run_filter
+		$value = $this->_run_filter($key, $value);
+		$this->_data[$key] = $value;
+	}
+
+	/**
+	* Try to get a value from data array
+	*
+	* @throws	Flatfile_Exception
+	* @param	string	Key of data array
+	* @return	mixte
+	**/
+	public function __get($key)
+	{
+
+		if (array_key_exists($key, $this->_data))
+			return $this->_data[$key];
+
+		// if ($key === 'content' AND $this->_loaded)
+		if ($key === 'content')
+			return $this->_data['content'] = trim($this->_parse_content());
+
+		return NULL;
+		// throw new Flatfile_Exception('Property ' . $key . ' does not exist in ' . get_class($this) . ' !');
+	}
+
+	/**
+	* Magic isset to test _data
+	**/
+	public function __isset($key)
+	{
+		// STATE_LOADED
+		if ($this->_loaded !== TRUE)
+			$this->find();
+
+		return isset($this->_data[$key]);
+	}
+
+}
