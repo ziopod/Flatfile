@@ -8,9 +8,18 @@ class Flatfile_Model_Page extends Flatfile {
 	public function filters()
 	{
 		return array(
+			'excerpt' => array(
+				array('Markdown'),
+				array('SmartyPants'),
+			),
+			'headline' => array(
+				array('Markdown'),
+				array('SmartyPants'),
+			),
 			'content' => array(
-				array('Markdown')
-			)
+				array('Markdown'),
+				array('SmartyPants'),
+			),
 		);
 	}
 	

@@ -1,9 +1,7 @@
-Title:Example Flatfile
-qsd
-qsdqsd
-qs   qs
-
-
+Title: Example Flatfile
+Excerpt: *Ceci est un **extrait** de la page*
 ---
 
-This is a example **Markdown** Flatfile
+**Ceci est le chapeau du contenu**
+<!--more-->
+This is a example of content **Markdown** Flatfile

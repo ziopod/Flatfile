@@ -12,11 +12,6 @@ class Flatfile_View_Page extends Flatfile_View_App{
 	{
 		// Load Flatfile
 		$this->page = new Model_Page(Request::initial()->param('slug'));
-		echo Debug::vars($this->page);
+		// echo Debug::vars($this->page);
 	}
-
-	// public function content()
-	// {
-	// 	return "Content test :D";
-	// }
 }

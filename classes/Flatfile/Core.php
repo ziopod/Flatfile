@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') OR die ('No direct script access');
 /**
-* Flatfile
+* Boilerplate drafting structure
 *
 * @package		Flatfile
 * @author		Ziopod
@@ -36,6 +36,7 @@ class Flatfile_Core {
 	public $filename;
 
 	const METAS_SEPARATOR = '---';
+	const CONTENT_HEADLINE_SEPARATOR = '<!--more-->';
 
 	/**
 	* Return a model of the model na provided. You can spacify an file 
@@ -90,6 +91,12 @@ class Flatfile_Core {
 			$this->find();
 		}
 
+	}
+
+	// Return headline
+	public function headline()
+	{
+		return $this->headline;
 	}
 
 	// Return content
@@ -221,11 +228,19 @@ class Flatfile_Core {
 			else
 			{
 				$content .= $line;
+
+				if (strpos($line, Flatfile::CONTENT_HEADLINE_SEPARATOR) !== FALSE)
+				{
+					$headline = $content;
+					$content = '';
+				}
 			}
 		}
 
-		$content = SmartyPants(Markdown($content));
-		return $content;
+		// if ($headline)
+		// {}
+		$this->headline = $headline;
+		$this->content = $content; // Trim ?
 
 	}
 
@@ -338,12 +353,12 @@ class Flatfile_Core {
 	public function __get($key)
 	{
 
+		// if ($key === 'content' AND $this->_loaded)
+		if ($key === 'content' OR $key === 'headline')
+			$this->_parse_content();
+
 		if (array_key_exists($key, $this->_data))
 			return $this->_data[$key];
-
-		// if ($key === 'content' AND $this->_loaded)
-		if ($key === 'content')
-			return $this->_data['content'] = trim($this->_parse_content());
 
 		return NULL;
 		// throw new Flatfile_Exception('Property ' . $key . ' does not exist in ' . get_class($this) . ' !');
