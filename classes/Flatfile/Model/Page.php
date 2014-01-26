@@ -29,20 +29,7 @@ class Flatfile_Model_Page extends Flatfile {
 	**/
 	public function url()
 	{
-		return URL::base(TRUE, TRUE) . 'post/' . $this->slug();
+		return URL::base(TRUE, TRUE) . $this->slug();
 	}
-
-
-	// TODO : supprimer
-	// public function content()
-	// {
-	// 	return $this->content;
-	// }
-
-	// public function title()
-	// {
-	// 	return $this->title;
-	// }
-
 
 }
