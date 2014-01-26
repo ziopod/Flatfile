@@ -227,12 +227,15 @@ class Flatfile_Core {
 			}
 			else
 			{
-				$content .= $line;
 
 				if (strpos($line, Flatfile::CONTENT_HEADLINE_SEPARATOR) !== FALSE)
 				{
 					$headline = $content;
 					$content = '';
+				}
+				else
+				{
+					$content .= $line;				
 				}
 			}
 		}
