@@ -18,7 +18,12 @@ class Flatfile_Core {
 	/**
 	* @var	string	Path to the folder which contain files
 	*/
-	protected $_path; 
+	protected $_path;
+
+	/**
+	* @var	string	Markdown filename
+	**/
+	protected $_filename;
 
 	/**
 	* @var	string	Slug
@@ -77,7 +82,7 @@ class Flatfile_Core {
 		// Store type
 		$this->_type = strtolower(substr(get_class($this), 6));
 		// Store folder path
-		$this->_path = Inflector::plural($this->_type) . DIRECTORY_SEPARATOR;
+		$this->_path = DOCROOT . 'content' . DIRECTORY_SEPARATOR . Inflector::plural($this->_type) . DIRECTORY_SEPARATOR;
 		
 		if ($sub_folders)
 			$this->_path .= $sub_folders . DIRECTORY_SEPARATOR;
@@ -87,6 +92,7 @@ class Flatfile_Core {
 		{
 			$this->_slug = $slug;
 			$this->slug = $slug; // Store slug in _data array
+			$this->_filename = $slug . '.md';
 			// A slug spécified, automaticly find file
 			$this->find();
 		}
@@ -158,7 +164,7 @@ class Flatfile_Core {
 	{
 		// Get markdown file by slug
 		if ($slug !== NULL)
-			return Kohana::find_file('content', $this->_path . $this->_slug, 'md');
+			return 	$this->_path . $this->_filename;
 	}
 
 
@@ -168,7 +174,8 @@ class Flatfile_Core {
 	protected function _parse_meta()
 	{
 		// Open file in read mode
-		$file = fopen(Kohana::find_file('content', $this->_path . $this->_slug, 'md'), 'r');
+		// $file = fopen(Kohana::find_file('content', $this->_path . $this->_slug, 'md'), 'r');
+		$file = fopen($this->_path . $this->_filename, 'r');
 
 		// Scan each line
 		while ($line = fgets($file))
@@ -214,6 +221,7 @@ class Flatfile_Core {
 	protected function _parse_content()
 	{
 		$file = Kohana::find_file('content', $this->_path . $this->_slug, 'md');
+		$file = $this->_path . $this->_filename;
 		$skip_metas = TRUE;
 		$headline = ''; // Flatfile::CONTENT_HEADLINE_SEPARATOR = <!--more-->
 		$content = '';

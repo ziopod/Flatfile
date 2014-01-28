@@ -1,10 +1,16 @@
-{{#page}}
-<article>
-	<header>
-		<h1>{{title}}</h1>
-	</header>
-	{{{excerpt}}}
-	{{{headline}}}
-	{{{content}}}
-</article>
-{{/page}}
+<div class="wrapper">
+	{{#page}}
+	<article class="col-8">
+		<header>
+			<h1>{{title}}</h1>
+		</header>
+		<div class="muted">
+			{{{excerpt}}}
+		</div>
+		<div class="headline">
+			{{{headline}}}
+		</div>
+		{{{content}}}
+	</article>
+	{{/page}}
+</div>

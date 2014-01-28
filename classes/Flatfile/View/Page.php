@@ -4,7 +4,7 @@
 * Auto load page data
 **/
 
-class Flatfile_View_Page extends Flatfile_View_App{
+class Flatfile_View_Page extends View_App{
 
 	/**
 	* @var	Flafil object

@@ -54,7 +54,7 @@ class Flatfile_View_App {
 				'url'		=> $this->base_url() . 'about',
 				'name'		=> __('Example page'),
 				'title'		=> __('Go to example page'),
-				'current'	=> Request::initial()->controller() === 'App' AND Request::initial()->action() === 'about',
+				'current'	=> Request::initial()->controller() === 'App' AND Request::initial()->param('slug') === 'about',
 			),
 		);
 	}
