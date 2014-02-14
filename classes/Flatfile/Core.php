@@ -80,12 +80,19 @@ class Flatfile_Core {
 			$sub_folders = implode(DIRECTORY_SEPARATOR, $sub_folders);
 
 		// Store type
-		$this->_type = strtolower(substr(get_class($this), 6));
+		$folder = NULL;
+		$classname = get_class($this);
+		if ($classname !== 'Flatfile')
+		{
+			$this->_type = strtolower(substr($classname, 6));		
+			$folder = Inflector::plural($this->_type) . DIRECTORY_SEPARATOR;
+		}
+
 		// Store folder path
-		$this->_path = DOCROOT . 'content' . DIRECTORY_SEPARATOR . Inflector::plural($this->_type) . DIRECTORY_SEPARATOR;
-		
+		$this->_path = DOCROOT . 'content' . DIRECTORY_SEPARATOR . $folder;
+
 		if ($sub_folders)
-			$this->_path .= $sub_folders . DIRECTORY_SEPARATOR;
+			$this->_path .= $folder . DIRECTORY_SEPARATOR;
 
 		// Trying to load Flatile if slug is provided
 		if ($slug !== NULL)
@@ -149,6 +156,7 @@ class Flatfile_Core {
 			else
 			{
 				// Throw exception, Unable to find markdown file
+				throw new Kohana_Exception(__("Unable to find :filename in :folder", array(':filename' => $this->_filename, ':folder' => $this->_path))); exit;
 			}
 		}
 		else
@@ -164,7 +172,10 @@ class Flatfile_Core {
 	{
 		// Get markdown file by slug
 		if ($slug !== NULL)
-			return 	$this->_path . $this->_filename;
+			if (is_file($this->_path . $this->_filename))
+				return 	$this->_path . $this->_filename;
+
+		return false;
 	}
 
 
@@ -200,8 +211,9 @@ class Flatfile_Core {
 			else // Store value
 			{
 				// Preserve slug
-				if ($property == 'slug')
-					continue;
+				// TODO: tester si necessaire
+				// if ($property == 'slug')
+				// 	continue;
 
 				// Adding value
 				$newline .= $line;

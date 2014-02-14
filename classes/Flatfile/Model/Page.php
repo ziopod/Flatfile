@@ -35,7 +35,7 @@ class Flatfile_Model_Page extends Flatfile {
 	**/
 	public function url()
 	{
-		return URL::base(TRUE, TRUE) . $this->slug();
+		return URL::base(TRUE, TRUE) . $this->slug;
 	}
 
 }

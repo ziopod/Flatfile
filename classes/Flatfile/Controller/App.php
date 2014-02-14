@@ -13,14 +13,6 @@ class Flatfile_Controller_App extends Controller {
 	public $view;
 
 	/**
-	* Home
-	**/
-	public function action_home()
-	{
-		$this->view = new View_Home;
-	}
-
-	/**
 	* Standard page
 	**/
 	public function action_page()

@@ -77,6 +77,6 @@ Route::set('home', '(<controller>(/<action>(/<id>)))')
 	));
 
 // Load Smartypants Typographer
-include Kohana::find_file('vendors/smartypants-typographer', 'smartypants', 'php');
+include Kohana::find_file('vendor', 'smartypants-typographer/smartypants', 'php');
 // Load Markdown
 include Kohana::find_file('vendor', 'markdown/markdown', 'php');
