@@ -1,7 +1,13 @@
 <?php
 
 /**
-* You can replace this classe with your own stuffs
+* You can replace this class with your own stuffs
+*
+* @package		Flatfile
+* @category		View Model
+* @author		Ziopod <ziopod@gmail.com>
+* @copyright	(c) 2013-2014 Ziopod
+* @license		http://opensource.org/licenses/MIT
 **/
 
 class View_Page extends Flatfile_View_Page{}

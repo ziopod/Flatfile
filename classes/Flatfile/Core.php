@@ -1,11 +1,13 @@
 <?php defined('SYSPATH') OR die ('No direct script access');
 /**
+* # Flatfile
+*
 * Boilerplate drafting structure
 *
 * @package		Flatfile
-* @author		Ziopod
-* @copyright	© ziopod
-* @license		http://opensource.org/licenses/mit-license.php
+* @author		Ziopod <ziopod@gmail.com>
+* @copyright	(c) 2013-2014 Ziopod
+* @license		http://opensource.org/licenses/MIT
 **/
 
 class Flatfile_Core {

@@ -1,13 +1,21 @@
 <?php
 
 /**
-* Auto load page data
+* # Page View Model
+*
+* Automaticly load page based on slug, throw 404 if page doesn't exist.
+*
+* @package		Flatfile
+* @category		View Model
+* @author		Ziopod <ziopod@gmail.com>
+* @copyright	(c) 2013-2014 Ziopod
+* @license		http://opensource.org/licenses/MIT
 **/
 
 class Flatfile_View_Page extends View_App{
 
 	/**
-	* @var	Flafil object
+	* @var	object	Flafile page object
 	**/
 	public $page;
 
@@ -24,7 +32,5 @@ class Flatfile_View_Page extends View_App{
 		}
 
 		$this->title = $this->page->title;
-		// $this->page->content;
-		// echo Debug::vars($this->page);
 	}
 }

@@ -1,4 +1,20 @@
 <?php defined('SYSPATH') OR die ('No direct script access');
+/**
+* # App
+*
+* This basic controller provide autorendering layout hooks
+*
+* Provide default action for :
+*
+* - pages
+* - posts (comming soon)
+*
+* @package		Flatfile
+* @category		Controller
+* @author		Ziopod <ziopod@gmail.com>
+* @copyright	(c) 2013-2014 Ziopod
+* @license		http://opensource.org/licenses/MIT
+**/
 
 class Flatfile_Controller_App extends Controller {
 
@@ -34,6 +50,7 @@ class Flatfile_Controller_App extends Controller {
 	public function after()
 	{
 		parent::after();
+		
 		// Auto render view
 		if (isset($this->view))
 		{
