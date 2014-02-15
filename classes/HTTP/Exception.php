@@ -1,5 +1,12 @@
 <?php
-
+/**
+* HTTP Exception
+*
+* **Evaluate before adding to flatfile module core**
+*
+* @package		Flatfile
+* @category		Evaluate
+**/
 class HTTP_Exception extends Kohana_HTTP_Exception {
 
 	public function get_response()

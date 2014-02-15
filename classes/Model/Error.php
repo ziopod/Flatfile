@@ -1,9 +1,11 @@
 <?php defined('SYSPATH') or die ('No direct script access.');
 /**
-* Récupération des données Flat
+* Error model
 *
-* @package		AMAP
-* @category		Model
+* **Evaluate before adding to flatfile module core**
+*
+* @package		Flatfile
+* @category		Evaluate
 **/
 
 class Model_Error extends Flatfile{
