@@ -31,6 +31,10 @@ class Flatfile_View_Page extends View_App{
 			throw HTTP_Exception::factory(404, __("Unable to find URI :uri"), array(':uri' => Request::initial()->uri()	));		
 		}
 
+		// HTML meta data
 		$this->title = $this->page->title;
+		$this->author = $this->page->author;
+		$this->license = $this->page->license;
+		$this->description = $this->page->description;
 	}
 }

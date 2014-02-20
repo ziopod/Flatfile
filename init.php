@@ -23,21 +23,8 @@ else
 }
 
 /**
- * Initialize Kohana, setting based on environment.
- * TODO : confirmer que cela fonctionne…
- */
-Kohana::init(array(
-	'base_url'		=> '/qsdsqd/qsd',
-	'index_file'	=> 'qsqsd',
-	'caching'		=> Kohana::$environment !== Kohana::DEVELOPMENT,
-	'profile'		=> Kohana::$environment === Kohana::DEVELOPMENT,
-	'errors'		=> Kohana::$environment !== Kohana::PRODUCTION,
-));
-
-/**
  * Attach a file reader to config. Multiple readers are supported.
- */
-
+ **/
 switch (Kohana::$environment) {
 	case Kohana::DEVELOPMENT:
 		Kohana::$config->attach(new Config_File('config/development'));
@@ -56,7 +43,6 @@ switch (Kohana::$environment) {
 		error_reporting();
 		break;
 }
-
 
 /**
 * Autoload page

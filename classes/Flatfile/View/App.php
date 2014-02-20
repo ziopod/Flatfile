@@ -36,12 +36,7 @@ class Flatfile_View_App {
 	**/
 	public function styles()
 	{
-		return array(
-			array(
-				'src'	=> $this->base_url() . 'css/style.css',
-				'media'	=> 'screen',
-			),
-		);
+		return array();
 	}
 
 	/**
@@ -84,22 +79,8 @@ class Flatfile_View_App {
 	*
 	* @return 	array
 	**/
-	public function navigation()
-	{
-		return array(
-			array(
-				'url'		=> $this->base_url(),
-				'name'		=> __('Home'),
-				'title'		=> __('Go to Home'),
-				'current'	=> Request::initial()->controller() === 'App' AND Request::initial()->action() === 'home',
-			),
-			array(
-				'url'		=> $this->base_url() . 'about',
-				'name'		=> __('Example page'),
-				'title'		=> __('Go to example page'),
-				'current'	=> Request::initial()->controller() === 'App' AND Request::initial()->param('slug') === 'about',
-			),
-		);
+	public function navigation(){
+		return array();
 	}
 
 	/**
