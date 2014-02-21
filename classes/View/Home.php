@@ -14,6 +14,6 @@ class View_Home extends View_App{
 
 	public function content()
 	{
-		return 'Welcome :D';
+		return 'This is home Mustache template, you can remplace it like you want.';
 	}
 }
