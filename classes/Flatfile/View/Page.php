@@ -32,7 +32,7 @@ class Flatfile_View_Page extends View_App{
 		}
 
 		// HTML meta data
-		if ( ! $this->title)
+		if ($this->page->title)
 			$this->title = $this->page->title;
 		
 		$this->author = $this->page->author;
