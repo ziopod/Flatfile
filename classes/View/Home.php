@@ -14,6 +14,6 @@ class View_Home extends View_App{
 
 	public function content()
 	{
-		return 'This is home Mustache template, you can remplace it like you want.';
+		return 'This is home View and Template, you can remplace with your own stuff.';
 	}
 }
