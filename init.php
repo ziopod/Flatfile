@@ -47,10 +47,11 @@ switch (Kohana::$environment) {
 /**
 * Autoload page
 **/
-Route::set('page', '<slug>')
+Route::set('page', '(/<slug>)')
 	->defaults(array(
 		'controller'	=> 'App',
 		'action'		=> 'page',
+		'slug'			=> 'home',
 	));
 
 /**
@@ -59,7 +60,7 @@ Route::set('page', '<slug>')
 Route::set('home', '(<controller>(/<action>(/<id>)))')
 	->defaults(array(
 		'controller' => 'App',
-		'action'     => 'home',
+		'action'     => 'index',
 	));
 
 // Load Smartypants Typographer
