@@ -126,6 +126,45 @@ class Flatfile_Core {
 
 
 	/**
+	* Define filter
+	* **Inspire by Kohana ORM::run_filter()**
+	**/
+	public function filters()
+	{
+		return array();
+	}
+
+	/**
+	* String to list filter
+	*
+	* @param	string	Example: ""
+	* @return	array 
+	**/
+	public static function str_to_list($str)
+	{
+		$tags = array();
+
+		foreach (explode(', ', $str) as $tag)
+		{
+			$tags[] = array(
+				'name'	=> $tag,
+				'slug'	=> URL::title($tag),
+			);
+		}
+
+		return $tags;
+	}
+
+	// Test with Tumblr api: http://api.tumblr.com/v2/blog/blogdamientran.tumblr.com/posts?id=76514425378&api_key=fuiKNFp9vQFvjLNvx4sUwti4Yb5yGutBN4Xh10LXZhhRKjWlV4
+	/**
+	* Json api result form URL
+	**/
+	public static function api()
+	{
+
+	}
+
+	/**
 	* Find file an load data
 	**/
 	public function find()
@@ -170,6 +209,8 @@ class Flatfile_Core {
 	/**
 	* Retreive all files or one file base on slug
 	**/
+	// Use directory iterator
+	// http://us2.php.net/manual/fr/class.directoryiterator.php
 	protected function _get_files($slug = NULL)
 	{
 		// Get markdown file by slug
@@ -270,15 +311,6 @@ class Flatfile_Core {
 	}
 
 	/**
-	* Define filter
-	* **Inspire by Kohana ORM::run_filter()**
-	**/
-	public function filters()
-	{
-		return array();
-	}
-
-	/**
 	* Filters a value for a specific property
 	* **Inspire by Kohana ORM::run_filter()**
 	*
@@ -336,25 +368,6 @@ class Flatfile_Core {
 
 		return $value;
 	}
-
-	/**
-	* Somes filters
-	**/
-	public static function str_to_list($str)
-	{
-		$tags = array();
-
-		foreach (explode(', ', $str) as $tag)
-		{
-			$tags[] = array(
-				'name'	=> $tag,
-				'slug'	=> URL::title($tag),
-			);
-		}
-
-		return $tags;
-	}
-
 
 	/**
 	* Set value in data array
