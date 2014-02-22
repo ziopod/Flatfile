@@ -94,7 +94,7 @@ class Flatfile_Core {
 		$this->_path = DOCROOT . 'content' . DIRECTORY_SEPARATOR . $folder;
 
 		if ($sub_folders)
-			$this->_path .= $sub_folder . DIRECTORY_SEPARATOR;
+			$this->_path .= $sub_folders . DIRECTORY_SEPARATOR;
 
 		// Trying to load Flatile if slug is provided
 		if ($slug !== NULL)
