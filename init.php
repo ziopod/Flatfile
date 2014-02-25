@@ -49,7 +49,8 @@ switch (Kohana::$environment) {
 **/
 Route::set('page', '<slug>', array(
 		/** You can use that for restrict page **/
-		// 'slug'	=> 'my_page'
+		// 'slug'	=> 'my_page',
+		'slug'	=> '.*',
 	))
 	->defaults(array(
 		'controller'	=> 'App',
