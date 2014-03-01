@@ -50,7 +50,7 @@ switch (Kohana::$environment) {
 Route::set('page', '<slug>', array(
 		/** You can use that for restrict page **/
 		// 'slug'	=> 'my_page',
-		'slug'	=> '.*',
+		// 'slug'	=> '.*',
 	))
 	->defaults(array(
 		'controller'	=> 'App',
@@ -60,11 +60,11 @@ Route::set('page', '<slug>', array(
 /**
 * Default Flatfile route
 **/
-Route::set('home', '(<controller>(/<action>(/<id>)))')
-	->defaults(array(
-		'controller' => 'App',
-		'action'     => 'home',
-	));
+// Route::set('home', '(<controller>(/<action>(/<id>)))')
+// 	->defaults(array(
+// 		'controller' => 'App',
+// 		'action'     => 'home',
+// 	));
 
 // Load Smartypants Typographer
 include Kohana::find_file('vendor', 'smartypants-typographer/smartypants', 'php');
