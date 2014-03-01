@@ -58,7 +58,7 @@ class Flatfile_Controller_App extends Controller {
 		}
 		else
 		{
-			$this->response->boody('No template found for View_' . Request::initial()->controller() . '_' . Request::initial()->action() . '!');
+			$this->response->body('No template found for View_' . Request::initial()->controller() . '_' . Request::initial()->action() . '!');
 		}
 	}
 }
