@@ -47,15 +47,15 @@ switch (Kohana::$environment) {
 /**
 * Autoload page
 **/
-Route::set('page', '<slug>', array(
-		/** You can use that for restrict page **/
-		// 'slug'	=> 'my_page',
-		// 'slug'	=> '.*',
-	))
-	->defaults(array(
-		'controller'	=> 'App',
-		'action'		=> 'page',
-	));
+// Route::set('page', '<slug>', array(
+// 		/** You can use that for restrict page **/
+// 		// 'slug'	=> 'my_page',
+// 		// 'slug'	=> '.*',
+// 	))
+// 	->defaults(array(
+// 		'controller'	=> 'App',
+// 		'action'		=> 'page',
+// 	));
 	
 /**
 * Default Flatfile route
