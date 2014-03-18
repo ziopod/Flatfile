@@ -159,9 +159,14 @@ class Flatfile_Core {
 	/**
 	* Json api result form URL
 	**/
-	public static function api()
+	public static function json_api($value)
 	{
-
+		$request = Request::factory($value);
+		$result = Request::factory($request->uri())
+			->query($request->query())
+			->execute()->body();
+	
+		return json_decode($result);
 	}
 
 	/**
@@ -247,7 +252,7 @@ class Flatfile_Core {
 					continue;
 
 				// Inititate new property
-				$this->$property = NULL;
+				// $this->$property = NULL;
 				// Get first value part
 				$newline = substr($line, $index + 1);
 			}
