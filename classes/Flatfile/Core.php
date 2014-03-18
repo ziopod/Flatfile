@@ -238,7 +238,7 @@ class Flatfile_Core {
 			if (strpos($line, Flatfile::METAS_SEPARATOR) !== FALSE)
 				break;
 
-			if (($index = strpos($line, ':')) !== FALSE) // Get new property
+			if (($index = strpos($line, ': ')) !== FALSE) // Get new property
 			{
 				$property = strtolower(substr($line, 0, $index));
 
