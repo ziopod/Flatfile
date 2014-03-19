@@ -166,7 +166,7 @@ class Flatfile_Core {
 			->query($request->query())
 			->execute()->body();
 	
-		return json_decode($result);
+		return json_decode($result)->response;
 	}
 
 	/**
