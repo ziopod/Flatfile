@@ -33,15 +33,16 @@ class Flatfile_Core {
 	protected $_slug;
 
 	/**
+	* @var array	List of model content files (match by filters and queries)
+	**/
+	protected $_files = array();
+
+	/**
 	* @var	array	For storing file data
 	**/
 	protected $_data = array();
 
-	/**
-	* @var	string	Filename
-	**/
-	public $filename;
-
+	const FILE_META_SEPARATOR = '_';
 	const METAS_SEPARATOR = '---';
 	const CONTENT_HEADLINE_SEPARATOR = '<!--more-->';
 
@@ -99,9 +100,8 @@ class Flatfile_Core {
 		// Trying to load Flatile if slug is provided
 		if ($slug !== NULL)
 		{
-			$this->_slug = $slug;
-			$this->slug = $slug; // Store slug in _data array
-			$this->_filename = $slug . '.md';
+			$this->_slug = $slug; // Store slug
+
 			// A slug spécified, automaticly find file
 			$this->find();
 		}
@@ -184,48 +184,107 @@ class Flatfile_Core {
 	**/
 	protected function _load($multiple = FALSE)
 	{
+		// Get files
+		$this->_get_files();
+
 		if ($multiple === TRUE)
 		{
 
 		}
-
-		if ($this->_slug)
+		else
 		{
-			// Strore filename
-			$this->filename = $this->_get_files($this->_slug);
 
-			if ($this->filename)
+			// Attempt to load Flatfile
+			if ($this->slug)
 			{
-				// Parse meta data from markdown file
-				$this->_parse_meta();
+				// Attempt get filename corresponding to the slug
+				if (isset($this->_files[$this->slug]))
+					$this->_filename = $this->_files[$this->slug];
 			}
 			else
 			{
-				// Throw exception, Unable to find markdown file
-				throw new Kohana_Exception(__("Unable to find :filename in :folder", array(':filename' => $this->_filename, ':folder' => $this->_path))); exit;
+				// Select first file we find
+				$this->_filename = current($this->_files);
+				// Throw exception, No slug secified
 			}
-		}
-		else
-		{
-			// Throw exception, No slug secified
+
+			if ( ! $this->_filename)
+				// Throw exception, Unable to find markdown file
+				throw new Kohana_Exception(__("Unable to find :filename in :folder", array(':filename' => $this->_filename, ':folder' => $this->_path)));
+
+			// Store filename in _data array
+			$this->filename = $this->_filename;
+			// Store slug in _data array
+			$this->slug = $this->_slug;
+			// Parse meta data from markdown file
+			$this->_parse_meta();
+
 		}
 	}
 
 	/**
-	* Retreive all files or one file base on slug
+	* Retreive and store all files, return valid filename if slug is specified
 	**/
-	// Use directory iterator
-	// http://us2.php.net/manual/fr/class.directoryiterator.php
-	protected function _get_files($slug = NULL)
+	protected function _get_files()
 	{
-		// Get markdown file by slug
-		if ($slug !== NULL)
-			if (is_file($this->_path . $this->_filename))
-				return 	$this->_path . $this->_filename;
+		// Scan modele content directory
+		$dir = new DirectoryIterator($this->_path);
 
-		return false;
+		foreach ($dir as $file)
+		{
+			$filename = $file->getFilename();
+
+			// Skip if is not a valid FlatFile file
+			if ( ! $this->_valid_flatfile($filename))
+				continue;
+
+			// Extract slug
+			$slug = $this->_extract_slug($filename);
+
+			// Match query and filter
+			// TODO
+
+			// Store the file
+			$this->_files[$slug] = $filename;
+		}
 	}
 
+	/**
+	* Test for valid Flatfile
+	**/
+	protected function _valid_flatfile($filename)
+	{
+		$file  = new SplFileInfo($this->_path . $filename);
+
+		if ( ! $file->isFile())
+			return false;
+
+		// Match extension
+		$pattern = '#^(.*)(\.md|\.markdown)$#';
+
+		if ( ! preg_match($pattern, $filename))
+			return false;
+
+		// Test Type mime text/plain ?
+
+		return true;
+	}
+
+	/**
+	* Extract slug from filename
+	*
+	* @param	string	Filename
+	* @return	string	Slug
+	**/
+	protected function _extract_slug($filename)
+	{
+		$pattern = '^([\d]{4}-[\d]{2}-[\d]{2}-|[\d]*-)?'; // Date, increment or nothing
+		$pattern = '^([\d]{4}-[\d]{2}-[\d]{2}'.Flatfile::FILE_META_SEPARATOR.'|[\d]*'.Flatfile::FILE_META_SEPARATOR.')?'; // Date, increment or nothing
+		$pattern .= '(.*)'; // Slug part
+		$pattern .= '(\.md|\.markdown)$'; // File extension;
+		preg_match("#$pattern#i", $filename, $matches);
+		return $matches[2];
+	}
 
 	/**
 	* Parse meta data from Markdown file
@@ -233,7 +292,6 @@ class Flatfile_Core {
 	protected function _parse_meta()
 	{
 		// Open file in read mode
-		// $file = fopen(Kohana::find_file('content', $this->_path . $this->_slug, 'md'), 'r');
 		$file = fopen($this->_path . $this->_filename, 'r');
 
 		// Scan each line
@@ -247,21 +305,19 @@ class Flatfile_Core {
 			{
 				$property = strtolower(substr($line, 0, $index));
 
+				// Preserve filename
+				if ($property == 'filename')
+					continue;
+
 				// Preserve slug
 				if ($property == 'slug')
 					continue;
 
-				// Inititate new property
-				// $this->$property = NULL;
 				// Get first value part
 				$newline = substr($line, $index + 1);
 			}
 			else // Store value
 			{
-				// Preserve slug
-				// TODO: tester si necessaire
-				// if ($property == 'slug')
-				// 	continue;
 
 				// Adding value
 				$newline .= $line;
@@ -280,7 +336,6 @@ class Flatfile_Core {
 	**/
 	protected function _parse_content()
 	{
-		$file = Kohana::find_file('content', $this->_path . $this->_slug, 'md');
 		$file = $this->_path . $this->_filename;
 		$skip_metas = TRUE;
 		$headline = ''; // Flatfile::CONTENT_HEADLINE_SEPARATOR = <!--more-->
