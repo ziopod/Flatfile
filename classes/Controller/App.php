@@ -20,7 +20,7 @@ class Controller_App extends Flatfile_Controller_App {
 	}
 
 	/**
-	* Home (example)
+	* Specific Home View
 	**/
 	public function action_home()
 	{

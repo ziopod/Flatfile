@@ -3,6 +3,7 @@
 /**
 * You can replace this class with your own stuffs
 *
+* With a specific View you can use a specific Template and you can add specific content
 * For example, you can aggregate FlatFile :
 *
 *	public function aside()

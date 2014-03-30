@@ -101,7 +101,6 @@ class Flatfile_Core {
 		if ($slug !== NULL)
 		{
 			$this->_slug = $slug; // Store slug
-
 			// A slug spécified, automaticly find file
 			$this->find();
 		}
