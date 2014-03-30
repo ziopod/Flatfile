@@ -30,7 +30,7 @@ class Flatfile_View_Page extends View_App{
 		{
 			throw HTTP_Exception::factory(404, __("Unable to find URI :uri"), array(':uri' => Request::initial()->uri()	));		
 		}
-		echo debug::vars($this->page);
+
 		$this->author = $this->page->author;
 		$this->license = $this->page->license;
 		$this->description = $this->page->description;
