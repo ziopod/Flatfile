@@ -194,22 +194,20 @@ class Flatfile_Core {
 		{
 
 			// Attempt to load Flatfile
-			if ($this->slug)
+			if ($this->_slug)
 			{
 				// Attempt get filename corresponding to the slug
-				if (isset($this->_files[$this->slug]))
-					$this->_filename = $this->_files[$this->slug];
+				if (isset($this->_files[$this->_slug]))
+					$this->_filename = $this->_files[$this->_slug];
 			}
 			else
 			{
-				// Select first file we find
-				$this->_filename = current($this->_files);
-				// Throw exception, No slug secified
+				throw new Kohana_Exception("No slug specified, please check defaults Route settings");
 			}
 
 			if ( ! $this->_filename)
 				// Throw exception, Unable to find markdown file
-				throw new Kohana_Exception(__("Unable to find :filename in :folder", array(':filename' => $this->_filename, ':folder' => $this->_path)));
+				throw new Kohana_Exception(__("Unable to find :slug in :folder", array(':slug' => $this->_slug, ':folder' => $this->_path)));
 
 			// Store filename in _data array
 			$this->filename = $this->_filename;

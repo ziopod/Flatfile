@@ -58,22 +58,12 @@ Route::set('page', '<slug>', array(
 	));
 	
 /**
-* Specific Home Controller
-**/
-Route::set('home', '')
-	->defaults(array(
-		'controller'	=> 'App',
-		'action'		=> 'home',
-		'slug'			=> 'home',
-	));
-
-/**
-* Default Flatfile route
+* Default Flatfile route whit specific Home Action
 **/
 Route::set('default', '(<controller>(/<action>(/<id>)))')
 	->defaults(array(
 		'controller'	=> 'App',
-		'action'		=> 'page',
+		'action'		=> 'home',
 		'slug'			=> 'home',
 	));
 
