@@ -207,7 +207,7 @@ class Flatfile_Core {
 
 			if ( ! $this->_filename)
 				// Throw exception, Unable to find markdown file
-				throw new Kohana_Exception(__("Unable to find :slug in :folder", array(':slug' => $this->_slug, ':folder' => $this->_path)));
+				throw new Kohana_Exception(__("Unable to find :slug Markdown file in :folder", array(':slug' => $this->_slug, ':folder' => $this->_path)));
 
 			// Store filename in _data array
 			$this->filename = $this->_filename;
