@@ -317,11 +317,13 @@ class Flatfile_Core {
 			{
 
 				// Adding value
-				$newline .= $line;
+				if (isset($newline))
+					$newline .= $line;
 			}
 
 			// Store property value
-			$this->$property = trim($newline);
+			if (isset($property))
+				$this->$property = trim($newline);
 		}
 
 		// Close file
