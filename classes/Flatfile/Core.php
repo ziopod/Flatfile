@@ -75,7 +75,7 @@ class Flatfile_Core {
 	public function __construct($slug = NULL)
 	{
 		// Get subfolders
-		$sub_folders = explode('/', $slug);
+		$sub_folders = explode('/', trim($slug));
 		// Get slug part
 		$slug = array_pop($sub_folders);
 		// Store subfolders
