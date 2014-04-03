@@ -225,7 +225,14 @@ class Flatfile_Core {
 	protected function _get_files()
 	{
 		// Scan modele content directory
-		$dir = new DirectoryIterator($this->_path);
+		try
+		{
+			$dir = new DirectoryIterator($this->_path);		
+		}
+		catch (UnexpectedValueException $a)
+		{
+			throw new Kohana_Exception(__("Unable to find direcory :path", array(':path' => $this->_path)));			
+		}
 
 		foreach ($dir as $file)
 		{
