@@ -134,6 +134,17 @@ class Flatfile_Core {
 	}
 
 	/**
+	* Markdown filter
+	*
+	* @param	string	Markdown
+	* @return 	string	HTML
+	**/
+	public static function Markdown($str)
+	{
+		return Michelf\MarkdownExtra::defaultTransform($str);
+	}
+
+	/**
 	* String to list filter
 	*
 	* @param	string	Example: ""

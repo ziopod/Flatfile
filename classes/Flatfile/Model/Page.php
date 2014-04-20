@@ -20,15 +20,15 @@ class Flatfile_Model_Page extends Flatfile {
 	{
 		return array(
 			'excerpt' => array(
-				array('Markdown'),
+				array('Flatfile::Markdown'),
 				array('SmartyPants'),
 			),
 			'headline' => array(
-				array('Markdown'),
+				array('Flatfile::Markdown'),
 				array('SmartyPants'),
 			),
 			'content' => array(
-				array('Markdown'),
+				array('Flatfile::Markdown'),
 				array('SmartyPants'),
 			),
 			'credit' => array(
