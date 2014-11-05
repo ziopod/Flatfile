@@ -17,7 +17,7 @@ class Model_Error extends Flatfile{
 	{
 		return array(
 			'content' => array(
-				array('Markdown'),
+				array('Flatfile::Markdown'),
 				array('SmartyPants'),
 			),
 		);

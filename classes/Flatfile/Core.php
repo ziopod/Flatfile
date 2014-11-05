@@ -175,7 +175,6 @@ class Flatfile_Core {
 		$result = Request::factory($request->uri())
 			->query($request->query())
 			->execute()->body();
-	
 		return json_decode($result)->response;
 	}
 
