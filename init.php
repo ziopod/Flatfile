@@ -63,7 +63,7 @@ Route::set('page', '<slug>', array(
 Route::set('default', '(<controller>(/<action>(/<id>)))')
 	->defaults(array(
 		'controller'	=> 'App',
-		'action'		=> 'home',
+		'action'		=> 'page',
 		'slug'			=> 'home',
 	));
 
