@@ -45,27 +45,27 @@ switch (Kohana::$environment) {
 }
 
 /**
-* Autoload page
+* Autoload page example
 **/
-Route::set('page', '<slug>', array(
-		/** You can use that for restrict page **/
-		// 'slug'	=> 'my_page',
-		// 'slug'	=> '.*',
-	))
-	->defaults(array(
-		'controller'	=> 'App',
-		'action'		=> 'page',
-	));
+// Route::set('page', '<slug>', array(
+// 		// 'slug'	=> 'my_page', // restrict a specific url
+// 		// 'slug'	=> '.*', // for any extension in url
+//		// 'slug'	=> '[a-zA-Z0-9_/]+', // for subfolder
+// 	))
+// 	->defaults(array(
+// 		'controller'	=> 'App',
+// 		'action'		=> 'page',
+// 	));
 	
 /**
-* Default Flatfile route whit specific Home Action
+* Default Flatfile route whit specific Home Action example
 **/
-Route::set('default', '(<controller>(/<action>(/<id>)))')
-	->defaults(array(
-		'controller'	=> 'App',
-		'action'		=> 'page',
-		'slug'			=> 'home',
-	));
+// Route::set('default', '(<controller>(/<action>(/<id>)))')
+// 	->defaults(array(
+// 		'controller'	=> 'App',
+// 		'action'		=> 'page',
+// 		'slug'			=> 'home',
+// 	));
 
 // Load Smartypants Typographer
 include Kohana::find_file('vendor', 'smartypants-typographer/smartypants', 'php');
