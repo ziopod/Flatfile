@@ -33,9 +33,20 @@ class Flatfile_Core {
 	protected $_slug;
 
 	/**
-	* @var array	List of model content files (match by filters and queries)
+	* @var array	List of slug/file name
+	* Evaluate : List of model content files (match by filters and queries)
 	**/
 	protected $_files = array();
+
+	/**
+	* @var string	Query offset
+	**/
+	protected $_offset;
+
+	/**
+	* @var string	Query limit
+	**/
+	protected $_limit;
 
 	/**
 	* @var	array	For storing file data
@@ -178,6 +189,32 @@ class Flatfile_Core {
 		return json_decode($result)->response;
 	}
 
+
+	/**
+	* Query offset for find all method
+	**/
+	public function offset($offset)
+	{
+		if ( ! $this->_offset)
+		{
+			$this->_offset = $offset;
+		}
+
+		return $this;
+	}
+
+	/**
+	* Query limit for find all method
+	**/
+	public function limit($limit)
+	{
+		if ( ! $this->_limit)
+		{
+			$this->_limit = $limit;
+		}
+
+		return $this;
+	}
 	/**
 	* Find file an load data
 	**/
@@ -210,11 +247,34 @@ class Flatfile_Core {
 		{
 			// Loading multiple Flatfile
 			$result = array();
+			// Natural sort ordering
+			natsort($this->_files);
 			
 			// Each md file is load in array and returned
 			foreach ($this->_files as $slug => $file)
 			{
+				if ($this->_offset)
+				{
+					$this->_offset --;
+
+					if ($this->_offset !== -1)
+					{
+						continue 1;
+					}
+				}
+
+				// Add Flatfile object to list
 				$result[] = Flatfile::factory($this->_type, $slug);
+
+				if ($this->_limit AND ! $this->_oofset)
+				{
+					$this->_limit --;
+
+					if ($this->_limit === 0)
+					{
+						break 1;
+					}
+				}
 			}
 
 			return $result;
