@@ -44,7 +44,8 @@ class Flatfile_Controller_App extends Controller {
 		parent::before();
 		// Init default layout
 		$this->layout = Kostache_Layout::factory('layout/default');
-
+		$view = 'View_' . ucfirst(Request::initial()->controller());
+		$this->view = new $view;
 	}
 
 	public function after()

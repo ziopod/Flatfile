@@ -98,7 +98,7 @@ class Flatfile_Core {
 			$this->_path .= $sub_folders . DIRECTORY_SEPARATOR;
 
 		// Trying to load Flatile if slug is provided
-		if ($slug !== NULL)
+		if ($slug != NULL)
 		{
 			$this->_slug = $slug; // Store slug
 			// A slug spécified, automaticly find file
@@ -189,6 +189,16 @@ class Flatfile_Core {
 	}
 
 	/**
+	* Find all data from folder and return references list
+	**/
+	public function find_all()
+	{
+		// Try to grab multiple md files
+		return $this->_load(TRUE);
+		// return $this;
+	}
+	
+	/**
 	* Load data
 	**/
 	protected function _load($multiple = FALSE)
@@ -198,6 +208,16 @@ class Flatfile_Core {
 
 		if ($multiple === TRUE)
 		{
+			// Loading multiple Flatfile
+			$result = array();
+			
+			// Each md file is load in array and returned
+			foreach ($this->_files as $slug => $file)
+			{
+				$result[] = Flatfile::factory($this->_type, $slug);
+			}
+
+			return $result;
 
 		}
 		else
@@ -317,7 +337,7 @@ class Flatfile_Core {
 
 			if (($index = strpos($line, ': ')) !== FALSE) // Get new property
 			{
-				$property = strtolower(substr($line, 0, $index));
+				$property = trim(strtolower(substr($line, 0, $index)));
 
 				// Preserve filename
 				if ($property == 'filename')
