@@ -46,7 +46,7 @@ class Flatfile_Core {
 	/**
 	* @var string	Query limit
 	**/
-	protected $_limit;
+	protected $_limit = 20; 
 
 	/**
 	* @var	array	For storing file data
@@ -195,11 +195,7 @@ class Flatfile_Core {
 	**/
 	public function offset($offset)
 	{
-		if ( ! $this->_offset)
-		{
-			$this->_offset = $offset;
-		}
-
+		$this->_offset = $offset;
 		return $this;
 	}
 
@@ -208,11 +204,7 @@ class Flatfile_Core {
 	**/
 	public function limit($limit)
 	{
-		if ( ! $this->_limit)
-		{
-			$this->_limit = $limit;
-		}
-
+		$this->_limit = $limit;
 		return $this;
 	}
 	/**
@@ -266,7 +258,7 @@ class Flatfile_Core {
 				// Add Flatfile object to list
 				$result[] = Flatfile::factory($this->_type, $slug);
 
-				if ($this->_limit AND ! $this->_oofset)
+				if ($this->_limit AND ! $this->_offset)
 				{
 					$this->_limit --;
 
