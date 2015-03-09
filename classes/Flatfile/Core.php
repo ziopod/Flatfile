@@ -315,7 +315,7 @@ class Flatfile_Core {
 		}
 		catch (UnexpectedValueException $a)
 		{
-			throw new Kohana_Exception(__("Unable to find direcory :path", array(':path' => $this->_path)));			
+			throw new Kohana_Exception(__("Unable to find directory :path", array(':path' => $this->_path)));			
 		}
 
 		foreach ($dir as $file)
