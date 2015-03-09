@@ -451,8 +451,6 @@ class Flatfile_Core {
 			}
 		}
 
-		// if ($headline)
-		// {}
 		$m = new Mustache_Engine;
 		$this->headline = $m->render($headline, $this);
 		$this->content = $m->render($content, $this); // Trim ?
