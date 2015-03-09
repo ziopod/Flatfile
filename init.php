@@ -67,8 +67,5 @@ switch (Kohana::$environment) {
 // 		'slug'			=> 'home',
 // 	));
 
-// Load Smartypants Typographer
+// Load Smartypants Typographer (old school style)
 include Kohana::find_file('vendor', 'smartypants-typographer/smartypants', 'php');
-// Load Markdown
-// include Kohana::find_file('vendor', 'markdown/markdown', 'php');
-include Kohana::find_file('vendor', 'markdown/Michelf/MarkdownExtra.inc', 'php');
