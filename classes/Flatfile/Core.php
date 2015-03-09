@@ -41,6 +41,11 @@ class Flatfile_Core {
 	protected $_files = array();
 
 	/**
+	* @var string	Sort order files
+	**/
+	protected $_order = 'desc';
+
+	/**
 	* @var string	Query offset
 	**/
 	protected $_offset;
@@ -191,6 +196,20 @@ class Flatfile_Core {
 		return json_decode($result)->response;
 	}
 
+	/**
+	* Ordering files
+	**/
+	public function order($order)
+	{
+		if ($order === 'asc')
+		{
+			$this->_order = 'asc';		
+		}
+
+		return $this;
+	}
+
+	// public function
 
 	/**
 	* Query offset for find all method
@@ -243,7 +262,13 @@ class Flatfile_Core {
 			$result = array();
 			// Natural sort ordering
 			natsort($this->_files);
-			
+
+			// Ordering files
+			if ($this->_order === 'desc')
+			{
+				$this->_files = array_reverse($this->_files, TRUE);	
+			}
+	
 			// Each md file is load in array and returned
 			foreach ($this->_files as $slug => $file)
 			{
