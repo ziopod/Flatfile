@@ -10,6 +10,8 @@
 * @license		http://opensource.org/licenses/MIT
 **/
 
+use Michelf\MarkdownExtra;
+
 class Flatfile_Core {
 	
 	/**
@@ -152,7 +154,7 @@ class Flatfile_Core {
 	**/
 	public static function Markdown($str)
 	{
-		return Michelf\MarkdownExtra::defaultTransform($str);
+		return MarkdownExtra::defaultTransform($str);
 	}
 
 	/**
