@@ -123,13 +123,13 @@ class Flatfile_Core {
 	// Return headline
 	public function headline()
 	{
-		return $this->headline;
+		return trim($this->headline);
 	}
 
 	// Return content
 	public function content()
 	{
-		return $this->content;
+		return trim($this->content);
 	}
 	// public function content()
 	// {
