@@ -2,7 +2,7 @@
 /**
 * # Flatfile
 *
-* Boilerplate drafting structure
+* Model for Flatfile 
 *
 * @package		Flatfile
 * @author		Ziopod <ziopod@gmail.com>
