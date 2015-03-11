@@ -267,7 +267,7 @@ class Flatfile_Core {
 			$property = $query[0];
 
 			// Property are set in data ?
-			if ( ! isset($this->$property))
+			if ( ! isset($this->_data[$property]))
 				continue;
 
 			// Search in value?
@@ -276,19 +276,19 @@ class Flatfile_Core {
 			{
 				$term = $query[2];
 
-				// Interger
+				// Integer
 				if (is_int($term))
-					if ( ! is_numeric($value))
+					if ( ! is_numeric($this->_data[$property]))
 						continue;
 				// Boolean
 				if (is_bool($term))
-					if (strtoupper($value) !== 'TRUE' AND strtoupper($value) !== 'FALSE')
+					if (strtoupper($this->_data[$property]) !== 'TRUE' AND strtoupper($this->_data[$property]) !== 'FALSE')
 						continue;
 
 				// String
-				$erm = (string) $term;
+				$term = (string) $term;
 
-				if ($term !== $value)
+				if ($term !== $this->_data[$property])
 					continue;
 			}
 
@@ -657,8 +657,6 @@ class Flatfile_Core {
 	**/
 	public function __set($key, $value)
 	{
-		// Call _run_filter
-		$value = $this->_run_filter($key, $value);
 		$this->_data[$key] = $value;
 	}
 
@@ -676,7 +674,7 @@ class Flatfile_Core {
 			$this->_parse_content();
 
 		if (array_key_exists($key, $this->_data))
-			return $this->_data[$key];
+			return $this->_run_filter($key, $this->_data[$key]);
 
 		return NULL;
 		// throw new Flatfile_Exception('Property ' . $key . ' does not exist in ' . get_class($this) . ' !');
