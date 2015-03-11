@@ -2,7 +2,7 @@
 /**
 * # Flatfile
 *
-* Model for Flatfile 
+* Model for Flatfile
 *
 * @package		Flatfile
 * @author		Ziopod <ziopod@gmail.com>
@@ -390,6 +390,7 @@ class Flatfile_Core {
 					return NULL;
 				}
 			}
+			
 			if (isset($this->_files[$this->_slug]))
 			{
 				$this->_filename = $this->_files[$this->_slug];
