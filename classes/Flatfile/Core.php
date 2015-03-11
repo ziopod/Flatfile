@@ -46,6 +46,11 @@ class Flatfile_Core {
 	protected $_order = 'desc';
 
 	/**
+	* @var array	Query terms
+	**/
+	protected $_query;// = array();
+
+	/**
 	* @var string	Query offset
 	**/
 	protected $_offset;
@@ -136,11 +141,6 @@ class Flatfile_Core {
 	{
 		return trim($this->content);
 	}
-	// public function content()
-	// {
-	// 	$this->__set('content', $this->content);
-	// }
-
 
 	/**
 	* Define filter
@@ -209,7 +209,14 @@ class Flatfile_Core {
 		return $this;
 	}
 
-	// public function
+	/**
+	* Adding terms to quey queue
+	**/
+	public function query($property, $op = NULL, $term = NULL)
+	{
+		$this->_query[] = array($property, $op, $term);
+		return $this;
+	}
 
 	/**
 	* Query offset for find all method
@@ -235,7 +242,8 @@ class Flatfile_Core {
 	{
 		// Constant STATE_LOADING
 		// Try to load file data
-		$this->_load();
+		//return 
+		return $this->_load();
 	}
 
 	/**
@@ -249,6 +257,48 @@ class Flatfile_Core {
 	}
 	
 	/**
+	*  Quering
+	**/
+	public function _quering($queries)
+	{
+		foreach($queries as $query)
+		{
+			// Get property
+			$property = $query[0];
+
+			// Property are set in data ?
+			if ( ! isset($this->$property))
+				continue;
+
+			// Search in value?
+			if ( ! empty($query[1]))
+			// if ( ! empty($query[2]) OR (isset($query[1]) AND ! isset($query[2])))
+			{
+				$term = $query[2];
+
+				// Interger
+				if (is_int($term))
+					if ( ! is_numeric($value))
+						continue;
+				// Boolean
+				if (is_bool($term))
+					if (strtoupper($value) !== 'TRUE' AND strtoupper($value) !== 'FALSE')
+						continue;
+
+				// String
+				$erm = (string) $term;
+
+				if ($term !== $value)
+					continue;
+			}
+
+			return TRUE;
+		}
+
+		return FALSE;
+	}
+
+	/**
 	* Load data
 	**/
 	protected function _load($multiple = FALSE)
@@ -256,7 +306,11 @@ class Flatfile_Core {
 		// Get files
 		$this->_get_files();
 
-		if ($multiple === TRUE)
+		// Match on property, terms and other stuffs
+		// TODO
+
+		// if ($multiple === TRUE)
+		if ($multiple === TRUE OR $this->_query)
 		{
 			// Loading multiple Flatfile
 			$result = array();
@@ -272,6 +326,28 @@ class Flatfile_Core {
 			// Each md file is load in array and returned
 			foreach ($this->_files as $slug => $file)
 			{
+
+				// Instatiate current Flatfile
+				$flatfile = Flatfile::factory($this->_type, $slug);
+
+				// Match query
+				// If not multiple 
+				if ($this->_query)
+				{
+					// If Flatfile not matching with queries, ignore it
+					if ( ! $flatfile->_quering($this->_query))
+					{
+						continue;
+					}
+
+					// If we want only one result
+					if ($multiple === FALSE)
+					{
+						// Return first result
+						return $flatfile;
+					}
+				}
+
 				if ($this->_offset)
 				{
 					$this->_offset --;
@@ -282,8 +358,8 @@ class Flatfile_Core {
 					}
 				}
 
-				// Add Flatfile object to list
-				$result[] = Flatfile::factory($this->_type, $slug);
+				// Add Flatfile object to list of result
+				$result[] = $flatfile;
 
 				if ($this->_limit AND ! $this->_offset)
 				{
@@ -302,21 +378,28 @@ class Flatfile_Core {
 		else
 		{
 
-			// Attempt to load Flatfile
-			if ($this->_slug)
+			// If any slug specified, we load the first post
+			if ( ! $this->_slug)
 			{
-				// Attempt get filename corresponding to the slug
-				if (isset($this->_files[$this->_slug]))
-					$this->_filename = $this->_files[$this->_slug];
+				if ($this->_files)
+				{
+					$this->_slug = $this->_extract_slug(current($this->_files));
+				}
+				else
+				{
+					return NULL;
+				}
 			}
-			else
+			if (isset($this->_files[$this->_slug]))
 			{
-				throw new Kohana_Exception("No slug specified, please check defaults Route settings");
+				$this->_filename = $this->_files[$this->_slug];
 			}
 
 			if ( ! $this->_filename)
+			{
 				// Throw exception, Unable to find markdown file
 				throw new Kohana_Exception(__("Unable to find :slug Markdown file in :folder", array(':slug' => $this->_slug, ':folder' => $this->_path)));
+			}
 
 			// Store filename in _data array
 			$this->filename = $this->_filename;
@@ -324,7 +407,7 @@ class Flatfile_Core {
 			$this->slug = $this->_slug;
 			// Parse meta data from markdown file
 			$this->_parse_meta();
-
+			return $this;
 		}
 	}
 
@@ -354,8 +437,29 @@ class Flatfile_Core {
 			// Extract slug
 			$slug = $this->_extract_slug($filename);
 
-			// Match query and filter
+			// Match query on date or slug
 			// TODO
+			// Quering based filename data (slug and date)
+
+			if ($this->_query)
+			{
+				foreach ($this->_query as $query)
+				{
+					// /!\ Crappy code, no date solution
+					if (
+							$query[0] === 'slug'
+							AND (
+									(($query[1] === '=') AND $slug !== $query[2])
+									OR
+									(($query[1] === '!=') AND $slug === $query[2]) 
+								)
+						)
+					{
+						// Filename do not match, ignore this file
+						continue 2;
+					}
+				}
+			}
 
 			// Store the file
 			$this->_files[$slug] = $filename;
@@ -414,7 +518,7 @@ class Flatfile_Core {
 			if (strpos($line, Flatfile::METAS_SEPARATOR) !== FALSE)
 				break;
 
-			if (($index = strpos($line, ': ')) !== FALSE) // Get new property
+			if (($index = strpos($line, ':')) !== FALSE) // Get new property
 			{
 				$property = trim(strtolower(substr($line, 0, $index)));
 
@@ -456,6 +560,9 @@ class Flatfile_Core {
 		$headline = ''; // Flatfile::CONTENT_HEADLINE_SEPARATOR = <!--more-->
 		$content = '';
 
+		if (!is_file($file))
+			return NULL;
+		
 		foreach (new SplFileObject($file) as $line)
 		{
 			if ($skip_metas)
@@ -564,7 +671,6 @@ class Flatfile_Core {
 	**/
 	public function __get($key)
 	{
-
 		// if ($key === 'content' AND $this->_loaded)
 		if ($key === 'content' OR $key === 'headline')
 			$this->_parse_content();
@@ -582,8 +688,8 @@ class Flatfile_Core {
 	public function __isset($key)
 	{
 		// STATE_LOADED
-		if ($this->_loaded !== TRUE)
-			$this->find();
+		// if ($this->_loaded !== TRUE)
+		// 	$this->find();
 
 		return isset($this->_data[$key]);
 	}
