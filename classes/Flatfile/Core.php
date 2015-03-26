@@ -266,12 +266,17 @@ class Flatfile_Core {
 		{
 			// Get property
 			$property = $query[0];
+
+			if ($property === 'date')
+				return TRUE;
+
 			// Operator
 			$operator = $query[1];
-
+			
 			// Property are set in data ?
 			if ( ! isset($this->_data[$property]))
 				continue;
+
 			// Search in value?
 			if ( ! empty($operator))
 			// if ( ! empty($query[2]) OR (isset($query[1]) AND ! isset($query[2])))
@@ -447,28 +452,31 @@ class Flatfile_Core {
 			// Match query on date or slug
 			// TODO
 			// Quering based filename data (slug and date)
+			if ($this->_query)
+			{
+				foreach($this->_query as $key => $query)
+				{
+					// Get property
+					$property = $query[0];
+					$operator = $query[1];
+					$value = $query[2];
+					// Test only date and slug on filename; ignore others
 
-			// if ($this->_query)
-			// {
+					if ($property === 'date')
+					{
+						
+						$date = (current($this->_extract_date($filename)));
+						// echo debu::vars();
+						$value = ($value);
+						if ($operator === '>' AND ($date < $value))
+							continue 2; // Ignore this file
+					}					
+					
+				}
 
-			// 	foreach ($this->_query as $query)
-			// 	{
-			// 		// /!\ Crappy code, no date solution
-			// 		if (
-			// 				$query[0] === 'slug'
-			// 				AND (
-			// 						(($query[1] === '=') AND $slug !== $query[2])
-			// 						OR
-			// 						(($query[1] === '!=') AND $slug === $query[2]) 
-			// 					)
-			// 			)
-			// 		{
+			}
 
-			// 			// Filename do not match, ignore this file
-			// 		/	continue 2;
-			// 		}
-			// 	}
-			// }
+
 
 			// Store the file
 			$this->_files[$slug] = $filename;
@@ -510,6 +518,19 @@ class Flatfile_Core {
 		$pattern .= '(\.md|\.markdown)$'; // File extension;
 		preg_match("#$pattern#i", $filename, $matches);
 		return $matches[2];
+	}
+
+	/**
+	* Extraxt date form filename
+	*
+	* @param	string	Filename
+	* @return	string	Timestamp date
+	**/
+	protected function _extract_date($filename)
+	{
+		$pattern = '([\d]{4}-[\d]{2}-[\d]{2})?'; // Date, increment or nothing
+		preg_match("#$pattern#i", $filename, $matches);
+		return $matches;
 	}
 
 	/**
