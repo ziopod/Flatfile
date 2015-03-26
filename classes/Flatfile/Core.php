@@ -2,7 +2,7 @@
 /**
 * # Flatfile
 *
-* Model for Flatfile
+* Model for Flatfile 
 *
 * @package		Flatfile
 * @author		Ziopod <ziopod@gmail.com>
@@ -261,34 +261,41 @@ class Flatfile_Core {
 	**/
 	public function _quering($queries)
 	{
+
 		foreach($queries as $query)
 		{
 			// Get property
 			$property = $query[0];
+			// Operator
+			$operator = $query[1];
 
 			// Property are set in data ?
 			if ( ! isset($this->_data[$property]))
 				continue;
-
 			// Search in value?
-			if ( ! empty($query[1]))
+			if ( ! empty($operator))
 			// if ( ! empty($query[2]) OR (isset($query[1]) AND ! isset($query[2])))
 			{
 				$term = $query[2];
+				$value = $this->_data[$property];
 
 				// Integer
 				if (is_int($term))
-					if ( ! is_numeric($this->_data[$property]))
+					if ( ! is_numeric($value))
 						continue;
+
 				// Boolean
 				if (is_bool($term))
-					if (strtoupper($this->_data[$property]) !== 'TRUE' AND strtoupper($this->_data[$property]) !== 'FALSE')
+					if (strtoupper($value) !== 'TRUE' AND strtoupper($value) !== 'FALSE')
 						continue;
 
 				// String
 				$term = (string) $term;
 
-				if ($term !== $this->_data[$property])
+				if ($operator === '=' AND $term != $value)
+					continue;
+
+				if ($operator === '!=' AND $term == $value)
 					continue;
 			}
 
@@ -390,7 +397,6 @@ class Flatfile_Core {
 					return NULL;
 				}
 			}
-			
 			if (isset($this->_files[$this->_slug]))
 			{
 				$this->_filename = $this->_files[$this->_slug];
@@ -442,25 +448,27 @@ class Flatfile_Core {
 			// TODO
 			// Quering based filename data (slug and date)
 
-			if ($this->_query)
-			{
-				foreach ($this->_query as $query)
-				{
-					// /!\ Crappy code, no date solution
-					if (
-							$query[0] === 'slug'
-							AND (
-									(($query[1] === '=') AND $slug !== $query[2])
-									OR
-									(($query[1] === '!=') AND $slug === $query[2]) 
-								)
-						)
-					{
-						// Filename do not match, ignore this file
-						continue 2;
-					}
-				}
-			}
+			// if ($this->_query)
+			// {
+
+			// 	foreach ($this->_query as $query)
+			// 	{
+			// 		// /!\ Crappy code, no date solution
+			// 		if (
+			// 				$query[0] === 'slug'
+			// 				AND (
+			// 						(($query[1] === '=') AND $slug !== $query[2])
+			// 						OR
+			// 						(($query[1] === '!=') AND $slug === $query[2]) 
+			// 					)
+			// 			)
+			// 		{
+
+			// 			// Filename do not match, ignore this file
+			// 		/	continue 2;
+			// 		}
+			// 	}
+			// }
 
 			// Store the file
 			$this->_files[$slug] = $filename;
