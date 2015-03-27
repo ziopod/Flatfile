@@ -466,7 +466,6 @@ class Flatfile_Core {
 					{
 						
 						$date = (current($this->_extract_date($filename)));
-						// echo debu::vars();
 						$value = ($value);
 						if ($operator === '>' AND ($date < $value))
 							continue 2; // Ignore this file
