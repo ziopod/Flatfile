@@ -469,6 +469,9 @@ class Flatfile_Core {
 						$value = ($value);
 						if ($operator === '>' AND ($date < $value))
 							continue 2; // Ignore this file
+
+						if ($operator === '<' AND ($date > $value))
+							continue 2;
 					}					
 					
 				}
