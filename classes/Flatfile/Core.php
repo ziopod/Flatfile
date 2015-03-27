@@ -465,8 +465,9 @@ class Flatfile_Core {
 					if ($property === 'date')
 					{
 						
-						$date = (current($this->_extract_date($filename)));
-						$value = ($value);
+						$date = strtotime(current($this->_extract_date($filename)));
+						$value = strtotime($value);
+
 						if ($operator === '>' AND ($date < $value))
 							continue 2; // Ignore this file
 
