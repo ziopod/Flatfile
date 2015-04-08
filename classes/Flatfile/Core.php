@@ -339,7 +339,7 @@ class Flatfile_Core {
 			foreach ($this->_files as $slug => $file)
 			{
 
-				// Instatiate current Flatfile
+				// Instantiate current Flatfile
 				$flatfile = Flatfile::factory($this->_type, $slug);
 
 				// Match query
@@ -402,6 +402,7 @@ class Flatfile_Core {
 					return NULL;
 				}
 			}
+
 			if (isset($this->_files[$this->_slug]))
 			{
 				$this->_filename = $this->_files[$this->_slug];
@@ -417,6 +418,8 @@ class Flatfile_Core {
 			$this->filename = $this->_filename;
 			// Store slug in _data array
 			$this->slug = $this->_slug;
+			// Store date
+			$this->date = $this->_extract_date($this->filename);
 			// Parse meta data from markdown file
 			$this->_parse_meta();
 			return $this;
@@ -465,7 +468,7 @@ class Flatfile_Core {
 					if ($property === 'date')
 					{
 						
-						$date = strtotime(current($this->_extract_date($filename)));
+						$date = strtotime($this->_extract_date($filename));
 						$value = strtotime($value);
 
 						if ($operator === '>' AND ($date < $value))
@@ -533,7 +536,7 @@ class Flatfile_Core {
 	{
 		$pattern = '([\d]{4}-[\d]{2}-[\d]{2})?'; // Date, increment or nothing
 		preg_match("#$pattern#i", $filename, $matches);
-		return $matches;
+		return current($matches);
 	}
 
 	/**
