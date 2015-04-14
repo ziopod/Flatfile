@@ -463,20 +463,31 @@ class Flatfile_Core {
 					$property = $query[0];
 					$operator = $query[1];
 					$value = $query[2];
-					// Test only date and slug on filename; ignore others
 
+					// Test only date and slug on filename; ignore others
 					if ($property === 'date')
 					{
 						
 						$date = strtotime($this->_extract_date($filename));
 						$value = strtotime($value);
 
-						if ($operator === '>' AND ($date < $value))
+						// Sup
+						if ($operator === '>' AND ($date <= $value))
 							continue 2; // Ignore this file
 
-						if ($operator === '<' AND ($date > $value))
+						// Sup or egale
+						if ($operator === '>=' AND ($date < $value))
+							continue 2;
+
+						// Inf
+						if ($operator === '<' AND ($date >= $value))
+							continue 2;
+
+						// Inf or egale
+						if ($operator === '<=' AND ($date > $value))
 							continue 2;
 					}					
+					
 					
 				}
 
