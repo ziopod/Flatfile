@@ -159,7 +159,7 @@ class Flatfile_Core {
 	**/
 	public static function Markdown($str)
 	{
-		return MarkdownExtra::defaultTransform($str);
+		return trim(MarkdownExtra::defaultTransform($str));
 	}
 
 	/**
