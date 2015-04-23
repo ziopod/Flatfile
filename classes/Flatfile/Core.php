@@ -543,11 +543,12 @@ class Flatfile_Core {
 	* @param	string	Filename
 	* @return	string	Timestamp date
 	**/
-	protected function _extract_date($filename)
+	protected function _extract_date($filename = NULL)
 	{
+		$filename = $filename ? $filename : $this->filename;
 		$pattern = '([\d]{4}-[\d]{2}-[\d]{2})?'; // Date, increment or nothing
 		preg_match("#$pattern#i", $filename, $matches);
-		return current($matches);
+		return $matches[0];
 	}
 
 	/**
@@ -719,6 +720,9 @@ class Flatfile_Core {
 		// if ($key === 'content' AND $this->_loaded)
 		if ($key === 'content' OR $key === 'headline')
 			$this->_parse_content();
+
+		if ($key ==='date')
+			return $this->_extract_date();
 
 		if (array_key_exists($key, $this->_data))
 			return $this->_run_filter($key, $this->_data[$key]);
