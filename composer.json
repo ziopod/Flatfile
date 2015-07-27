@@ -1,5 +1,5 @@
 {
-	"name": "ziopod/flatFile",
+	"name": "ziopod/flatfile",
 	"type": "Kohana-module",
 	"description": "A simple FlatFile ORM",
 	"keywords": ["kohana", "flatfile", "markdown", "ORM", "Kohana module"],
