@@ -68,7 +68,6 @@ class Flatfile_Core {
 
 	const FILE_META_SEPARATOR = '_';
 	const METAS_SEPARATOR = '---';
-	const CONTENT_HEADLINE_SEPARATOR = '<!--more-->';
 
 	/**
 	* Return a model of the model na provided. You can spacify an file 
@@ -129,12 +128,6 @@ class Flatfile_Core {
 			$this->find();
 		}
 
-	}
-
-	// Return headline
-	public function headline()
-	{
-		return trim($this->headline);
 	}
 
 	// Return content
@@ -606,7 +599,6 @@ class Flatfile_Core {
 	{
 		$file = $this->_path . $this->_filename;
 		$skip_metas = TRUE;
-		$headline = ''; // Flatfile::CONTENT_HEADLINE_SEPARATOR = <!--more-->
 		$content = '';
 
 		if (!is_file($file))
@@ -621,20 +613,10 @@ class Flatfile_Core {
 			}
 			else
 			{
-
-				if (strpos($line, Flatfile::CONTENT_HEADLINE_SEPARATOR) !== FALSE)
-				{
-					$headline = $content;
-					$content = '';
-				}
-				else
-				{
-					$content .= $line;				
-				}
+				$content .= $line;				
 			}
 		}
 
-		$this->headline = $headline;
 		$this->content = $content; // Trim ?
 
 	}
@@ -718,7 +700,7 @@ class Flatfile_Core {
 	public function __get($key)
 	{
 		// if ($key === 'content' AND $this->_loaded)
-		if ($key === 'content' OR $key === 'headline')
+		if ($key === 'content')
 			$this->_parse_content();
 
 		if ($key ==='date')
