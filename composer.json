@@ -2,7 +2,7 @@
 	"name": "FlatFile",
 	"type": "Kohana-module",
 	"description": "A simple FlatFile ORM",
-	"keywords": ["kohana", "flatfile", "markdown", "ORM"],
+	"keywords": ["kohana", "flatfile", "markdown", "ORM", "Kohana module"],
 	"homepage": "http://ziopod.com",
 	"licence": "MIT",
 	"authors": [
