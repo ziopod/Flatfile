@@ -21,6 +21,11 @@ class Flatfile_Core {
 	protected $_type;
 
 	/**
+	* @var string	Content folder witch contain files
+	**/
+	protected $_folder;
+
+	/**
 	* @var	string	Path to the folder which contain files
 	*/
 	protected $_path;
@@ -66,6 +71,7 @@ class Flatfile_Core {
 	**/
 	protected $_data = array();
 
+	const CONTENTDIR = 'content';
 	const FILE_META_SEPARATOR = '_';
 	const METAS_SEPARATOR = '---';
 
@@ -73,7 +79,7 @@ class Flatfile_Core {
 	* Return a model of the model na provided. You can spacify an file 
 	* slug (file name base) for load or create o specifque file model
 	*
-	*		$post = Flatfile::factory('Post', 'my-lovely-post');
+	*		$post = self::factory('Post', 'my-lovely-post');
 	*
 	* @chainable
 	* @param	string	The model name
@@ -101,6 +107,7 @@ class Flatfile_Core {
 		$sub_folders = explode('/', trim($slug));
 		// Get slug part
 		$slug = array_pop($sub_folders);
+
 		// Store subfolders
 		if (! empty($sub_folders))
 			$sub_folders = implode(DIRECTORY_SEPARATOR, $sub_folders);
@@ -108,17 +115,20 @@ class Flatfile_Core {
 		// Store type
 		$folder = NULL;
 		$classname = get_class($this);
+
 		if ($classname !== 'Flatfile')
 		{
-			$this->_type = strtolower(substr($classname, 6));		
+			$this->_type = strtolower(substr($classname, 6)); // Remove model_ to the classe name	
 			$folder = Inflector::plural($this->_type) . DIRECTORY_SEPARATOR;
 		}
 
 		// Store folder path
-		$this->_path = DOCROOT . 'content' . DIRECTORY_SEPARATOR . $folder;
+		$this->_folder = self::CONTENTDIR . DIRECTORY_SEPARATOR . $folder;
 
 		if ($sub_folders)
-			$this->_path .= $sub_folders . DIRECTORY_SEPARATOR;
+			$this->_folder .= $sub_folders . DIRECTORY_SEPARATOR;
+
+		$this->_path = DOCROOT . $this->_folder;
 
 		// Trying to load Flatile if slug is provided
 		if ($slug != NULL)
@@ -334,7 +344,7 @@ class Flatfile_Core {
 			{
 
 				// Instantiate current Flatfile
-				$flatfile = Flatfile::factory($this->_type, $slug);
+				$flatfile = self::factory($this->_type, $slug);
 
 				// Match query
 				// If not multiple 
@@ -524,7 +534,7 @@ class Flatfile_Core {
 	protected function _extract_slug($filename)
 	{
 		$pattern = '^([\d]{4}-[\d]{2}-[\d]{2}-|[\d]*-)?'; // Date, increment or nothing
-		$pattern = '^([\d]{4}-[\d]{2}-[\d]{2}'.Flatfile::FILE_META_SEPARATOR.'|[\d]*'.Flatfile::FILE_META_SEPARATOR.')?'; // Date, increment or nothing
+		$pattern = '^([\d]{4}-[\d]{2}-[\d]{2}'.self::FILE_META_SEPARATOR.'|[\d]*'.self::FILE_META_SEPARATOR.')?'; // Date, increment or nothing
 		$pattern .= '(.*)'; // Slug part
 		$pattern .= '(\.md|\.markdown)$'; // File extension;
 		preg_match("#$pattern#i", $filename, $matches);
@@ -557,7 +567,7 @@ class Flatfile_Core {
 		while ($line = fgets($file))
 		{
 			// Ending metas zone, load content
-			if (strpos($line, Flatfile::METAS_SEPARATOR) !== FALSE)
+			if (strpos($line, self::METAS_SEPARATOR) !== FALSE)
 				break;
 
 			if (($index = strpos($line, ':')) !== FALSE) // Get new property
@@ -608,17 +618,39 @@ class Flatfile_Core {
 		{
 			if ($skip_metas)
 			{
-				if (strpos($line, Flatfile::METAS_SEPARATOR) !== FALSE)
+				if (strpos($line, self::METAS_SEPARATOR) !== FALSE)
 					$skip_metas = FALSE;
 			}
 			else
 			{
-				$content .= $line;				
+				$content .= $this->_complete_url($line);
 			}
 		}
 
 		$this->content = $content; // Trim ?
 
+	}
+
+	/**
+	* Add base url, locale content directory
+	*
+	*/
+	protected function _complete_url($line)
+	{
+		$pattern = '/\[([^]]*)\] *\(([^)]*)\)/';
+		preg_match($pattern, $line, $matches);
+
+		if (isset($matches[2]))
+		{
+			// If URL do not contain a abslolute path
+			if ( ! Valid::url($matches[2]))
+			{
+				$replacement = URL::base(TRUE, FALSE) . $this->_folder . $matches[2];
+				return preg_replace('/' . preg_quote($matches[2], '/') . '/', $replacement, $line);				
+			}
+		}
+
+		return $line;
 	}
 
 	/**
