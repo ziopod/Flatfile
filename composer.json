@@ -1,0 +1,26 @@
+{
+	"name": "FlatFile",
+	"type": "Kohana-module",
+	"description": "A simple FlatFile ORM",
+	"keywords": ["kohana", "flatfile", "markdown", "ORM"],
+	"homepage": "http://ziopod.com",
+	"licence": "MIT",
+	"authors": [
+		{
+			"name": "Steve Beau",
+			"email": "ziopod@gmail.com",
+			"role": "developer"
+		}
+	],
+	"require": {
+		"composer/installers": "~1.0",
+		"michelf/php-markdown": "1.5.0.*",
+		"michelf/php-smartypants": "1.6.0-beta1",
+		"php": ">=5.3.0"
+	},
+	"extra": {
+		"installer-paths": {
+			"vendor/{$vendor}/{$name}": ["type:kohana-module"]
+		}
+	}
+}

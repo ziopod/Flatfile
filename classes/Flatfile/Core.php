@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die ('No direct script access');
+<?php
 /**
 * # Flatfile
 *
@@ -11,6 +11,7 @@
 **/
 
 use Michelf\MarkdownExtra;
+// use Michelf\SmartyPantsTypographer;
 
 class Flatfile_Core {
 	
@@ -157,7 +158,7 @@ class Flatfile_Core {
 	* @param	string	Markdown
 	* @return 	string	HTML
 	**/
-	public static function Markdown($str)
+	public static function markdown($str)
 	{
 		return trim(MarkdownExtra::defaultTransform($str));
 	}
@@ -621,9 +622,8 @@ class Flatfile_Core {
 			}
 		}
 
-		$m = new Mustache_Engine;
-		$this->headline = $m->render($headline, $this);
-		$this->content = $m->render($content, $this); // Trim ?
+		$this->headline = $headline;
+		$this->content = $content; // Trim ?
 
 	}
 
