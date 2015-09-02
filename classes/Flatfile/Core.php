@@ -637,17 +637,31 @@ class Flatfile_Core {
 	*/
 	protected function _complete_url($line)
 	{
-		$pattern = '/\[([^]]*)\] *\(([^)]*)\)/';
-		preg_match($pattern, $line, $matches);
-
-		if (isset($matches[2]))
+		// Image path
+		if ( preg_match('/!\[([^]]*)\] *\(([^)]*)\)/', $line, $matches))
 		{
-			// If URL do not contain a abslolute path
-			if ( ! Valid::url($matches[2]))
+			if (isset($matches[2]))
 			{
-				$replacement = URL::base(TRUE, FALSE) . $this->_folder . $matches[2];
-				return preg_replace('/' . preg_quote($matches[2], '/') . '/', $replacement, $line);				
+				if (! Valid::url($matches[2]))
+				{
+					$replacement = '![' . $matches[1] . '](' . URL::base(TRUE, FALSE) . $this->_folder . $matches[2] . ')';	
+					return preg_replace('/' . preg_quote($matches[0], '/') . '/', $replacement, $line);					
+				}
 			}
+
+		}		// Link
+		else if ( preg_match('/\[([^]]*)\] *\(([^)]*)\)/', $line, $matches))
+		{
+			if (isset($matches[2]))
+			{
+				// If URL do not contain a abslolute path
+				if ( ! Valid::url($matches[2]))
+				{
+					$replacement = '[' . $matches[1] . '](' . URL::base(TRUE, FALSE) . $matches[2] .')';
+					return preg_replace('/' . preg_quote($matches[0], '/') . '/', $replacement, $line);
+				}
+			}
+
 		}
 
 		return $line;
