@@ -749,8 +749,16 @@ class Flatfile_Core {
 		if ($key === 'content')
 			$this->_parse_content();
 
+		// Attempt to extract date from filename if available
 		if ($key ==='date')
-			return $this->_extract_date();
+		{
+			$date = $this->_extract_date();
+
+			if ($date)
+			{
+				return $date;			
+			}
+		}
 
 		if (array_key_exists($key, $this->_data))
 			return $this->_run_filter($key, $this->_data[$key]);
