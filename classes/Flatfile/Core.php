@@ -325,19 +325,20 @@ class Flatfile_Core {
 		// Match on property, terms and other stuffs
 		// TODO
 
+		// Natural sort ordering
+		natsort($this->_files);
+
+		// Ordering files
+		if ($this->_order === 'desc')
+		{
+			$this->_files = array_reverse($this->_files, TRUE);	
+		}
+
 		// if ($multiple === TRUE)
 		if ($multiple === TRUE OR $this->_query)
 		{
 			// Loading multiple Flatfile
 			$result = array();
-			// Natural sort ordering
-			natsort($this->_files);
-
-			// Ordering files
-			if ($this->_order === 'desc')
-			{
-				$this->_files = array_reverse($this->_files, TRUE);	
-			}
 	
 			// Each md file is load in array and returned
 			foreach ($this->_files as $slug => $file)
