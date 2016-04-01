@@ -119,7 +119,7 @@ class Flatfile_Core {
 		if ($classname !== 'Flatfile')
 		{
 			$this->_type = strtolower(substr($classname, 6)); // Remove model_ to the classe name	
-			$folder = Inflector::plural($this->_type) . DIRECTORY_SEPARATOR;
+			$folder = Inflector::plural(str_replace('_', '/', $this->_type)) . DIRECTORY_SEPARATOR;
 		}
 
 		// Store folder path
