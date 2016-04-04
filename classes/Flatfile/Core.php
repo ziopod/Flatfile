@@ -277,16 +277,15 @@ class Flatfile_Core {
 			// Operator
 			$operator = $query[1];
 			
-			// Property are set in data ?
-			if ( ! isset($this->_data[$property]))
+			// Term are not boolean or NULL and property are set in data
+			if ( ! (is_bool($term) OR $term === NULL) AND ! isset($this->_data[$property]))
 				continue;
 
 			// Search in value?
 			if ( ! empty($operator))
-			// if ( ! empty($query[2]) OR (isset($query[1]) AND ! isset($query[2])))
 			{
 				$term = $query[2];
-				$value = $this->_data[$property];
+				$value = isset($this->_data[$property]) ? $this->_data[$property] : NULL;
 
 				// Integer
 				if (is_int($term))
@@ -295,8 +294,18 @@ class Flatfile_Core {
 
 				// Boolean
 				if (is_bool($term))
-					if (strtoupper($value) !== 'TRUE' AND strtoupper($value) !== 'FALSE')
-						continue;
+				{
+					// Attempt to convert to boolean value
+					if ( (bool) $value === FALSE OR strtoupper($value) === 'FALSE')
+					{
+						$value = FALSE;
+					}
+					else if ($value !== NULL)
+					{
+						$value = TRUE;
+					}	
+				}
+
 
 				// String
 				$term = (string) $term;
