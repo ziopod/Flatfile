@@ -276,6 +276,7 @@ class Flatfile_Core {
 
 			// Operator
 			$operator = $query[1];
+			$term = $query[2];
 			
 			// Term are not boolean or NULL and property are set in data
 			if ( ! (is_bool($term) OR $term === NULL) AND ! isset($this->_data[$property]))
@@ -284,7 +285,6 @@ class Flatfile_Core {
 			// Search in value?
 			if ( ! empty($operator))
 			{
-				$term = $query[2];
 				$value = isset($this->_data[$property]) ? $this->_data[$property] : NULL;
 
 				// Integer
