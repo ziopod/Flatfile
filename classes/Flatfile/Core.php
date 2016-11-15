@@ -417,15 +417,22 @@ class Flatfile_Core {
 				}
 			}
 
+			// Try to find file by slug
 			if (isset($this->_files[$this->_slug]))
 			{
 				$this->_filename = $this->_files[$this->_slug];
 			}
+			// Try by filename 
+			else if (array_key_exists($this->_slug, array_flip($this->_files)))
+			{
+				$this->_filename = $this->_slug; 
+				$this->_slug = $this->_extract_slug($this->_slug);
+			}
 
 			if ( ! $this->_filename)
 			{
-				// Throw exception, Unable to find markdown file
-				throw new Kohana_Exception(__("Unable to find :slug Markdown file in :folder", array(':slug' => $this->_slug, ':folder' => $this->_path)));
+				// No file find, nothing to do.
+				return NULL;
 			}
 
 			// Store filename in _data array
