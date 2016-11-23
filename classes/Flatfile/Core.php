@@ -654,30 +654,44 @@ class Flatfile_Core {
 	*/
 	protected function _complete_url($line)
 	{
+
 		// Image path
-		if ( preg_match('/!\[([^]]*)\] *\(([^)]*)\)/', $line, $matches))
+		if ( preg_match_all('/!\[([^]]*)\] *\(([^)]*)\)/', $line, $matches, PREG_SET_ORDER))
 		{
-			if (isset($matches[2]))
+			foreach ($matches as $matche)
 			{
-				if (! Valid::url($matches[2]))
+				if (isset($matche[2]))
 				{
-					$replacement = '![' . $matches[1] . '](' . URL::base(TRUE, FALSE) . $this->_folder . $matches[2] . ')';	
-					return preg_replace('/' . preg_quote($matches[0], '/') . '/', $replacement, $line);					
-				}
+					if (! Valid::url($matche[2]))
+					{
+						$replacement = '![' . $matche[1] . '](' . URL::base(TRUE, FALSE) . $this->_folder . $matche[2] . ')';	
+						$line = preg_replace('/' . preg_quote($matche[0], '/') . '/', $replacement, $line);					
+					}
+				}			
+
 			}
 
-		}		// Link
-		else if ( preg_match('/\[([^]]*)\] *\(([^)]*)\)/', $line, $matches))
+			return $line;
+
+		}
+		// Link
+		else if ( preg_match_all('/\[([^]]*)\] *\(([^)]*)\)/', $line, $matches, PREG_SET_ORDER))
 		{
-			if (isset($matches[2]))
+			foreach ($matches as $matche)
 			{
-				// If URL do not contain a abslolute path
-				if ( ! Valid::url($matches[2]))
+				if (isset($matche[2]))
 				{
-					$replacement = '[' . $matches[1] . '](' . URL::base(TRUE, FALSE) . $matches[2] .')';
-					return preg_replace('/' . preg_quote($matches[0], '/') . '/', $replacement, $line);
+					// If URL do not contain a abslolute path
+					if ( ! Valid::url($matche[2]))
+					{
+						$replacement = '[' . $matche[1] . '](' . URL::base(TRUE, FALSE) . $matche[2] .')';
+						$line = preg_replace('/' . preg_quote($matche[0], '/') . '/', $replacement, $line);
+					}
 				}
+				
 			}
+
+			return $line;
 
 		}
 
