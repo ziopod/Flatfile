@@ -180,7 +180,7 @@ class Flatfile_Core {
 		{
 			$tags[] = array(
 				'name'	=> $tag,
-				'slug'	=> URL::title($tag),
+				'slug'	=> URL::title($tag, '-', TRUE),
 			);
 		}
 
