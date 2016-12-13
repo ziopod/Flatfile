@@ -155,38 +155,6 @@ class Flatfile_Core {
 	}
 
 	/**
-	* Markdown filter
-	*
-	* @param	string	Markdown
-	* @return 	string	HTML
-	**/
-	public static function markdown($str)
-	{
-		return trim(MarkdownExtra::defaultTransform($str));
-	}
-
-	/**
-	* String to list filter
-	*
-	* @param	string	Example: ""
-	* @return	array 
-	**/
-	public static function str_to_list($str)
-	{
-		$tags = array();
-
-		foreach (explode(', ', $str) as $tag)
-		{
-			$tags[] = array(
-				'name'	=> $tag,
-				'slug'	=> URL::title($tag, '-', TRUE),
-			);
-		}
-
-		return $tags;
-	}
-
-	/**
 	* Ordering files
 	**/
 	public function order($order)
