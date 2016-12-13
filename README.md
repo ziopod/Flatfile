@@ -156,7 +156,7 @@ Give him a json API service address, it will return a result ready to use.
 
 For example : 
 
-	bloginfo: http://api.tumblr.com/v2/blog/blogdamientran.tumblr.com/info
+	bloginfo: https://api.tumblr.com/v2/blog/blogdamientran.tumblr.com/info?api_key=fuiKNFp9vQFvjLNvx4sUwti4Yb5yGutBN4Xh10LXZhhRKjWlV4
 
 Resulting to 
 

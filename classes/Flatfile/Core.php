@@ -118,7 +118,7 @@ class Flatfile_Core {
 		if ($classname !== 'Flatfile')
 		{
 			$this->_type = strtolower(substr($classname, 6)); // Remove model_ to the classe name	
-			$folder = Inflector::plural($this->_type) . DIRECTORY_SEPARATOR;
+			$folder = Inflector::plural(str_replace('_', '/', $this->_type)) . DIRECTORY_SEPARATOR;
 		}
 
 		// Store folder path
@@ -179,7 +179,7 @@ class Flatfile_Core {
 		{
 			$tags[] = array(
 				'name'	=> $tag,
-				'slug'	=> URL::title($tag),
+				'slug'	=> URL::title($tag, '-', TRUE),
 			);
 		}
 
@@ -275,17 +275,16 @@ class Flatfile_Core {
 
 			// Operator
 			$operator = $query[1];
+			$term = $query[2];
 			
-			// Property are set in data ?
-			if ( ! isset($this->_data[$property]))
+			// Term are not boolean or NULL and property are set in data
+			if ( ! (is_bool($term) OR $term === NULL) AND ! isset($this->_data[$property]))
 				continue;
 
 			// Search in value?
 			if ( ! empty($operator))
-			// if ( ! empty($query[2]) OR (isset($query[1]) AND ! isset($query[2])))
 			{
-				$term = $query[2];
-				$value = $this->_data[$property];
+				$value = isset($this->_data[$property]) ? $this->_data[$property] : NULL;
 
 				// Integer
 				if (is_int($term))
@@ -294,8 +293,18 @@ class Flatfile_Core {
 
 				// Boolean
 				if (is_bool($term))
-					if (strtoupper($value) !== 'TRUE' AND strtoupper($value) !== 'FALSE')
-						continue;
+				{
+					// Attempt to convert to boolean value
+					if ( (bool) $value === FALSE OR strtoupper($value) === 'FALSE')
+					{
+						$value = FALSE;
+					}
+					else if ($value !== NULL)
+					{
+						$value = TRUE;
+					}	
+				}
+
 
 				// String
 				$term = (string) $term;
@@ -406,15 +415,22 @@ class Flatfile_Core {
 				}
 			}
 
+			// Try to find file by slug
 			if (isset($this->_files[$this->_slug]))
 			{
 				$this->_filename = $this->_files[$this->_slug];
 			}
+			// Try by filename 
+			else if (array_key_exists($this->_slug, array_flip($this->_files)))
+			{
+				$this->_filename = $this->_slug; 
+				$this->_slug = $this->_extract_slug($this->_slug);
+			}
 
 			if ( ! $this->_filename)
 			{
-				// Throw exception, Unable to find markdown file
-				throw new Kohana_Exception(__("Unable to find :slug Markdown file in :folder", array(':slug' => $this->_slug, ':folder' => $this->_path)));
+				// No file find, nothing to do.
+				return NULL;
 			}
 
 			// Store filename in _data array
@@ -645,30 +661,44 @@ class Flatfile_Core {
 	*/
 	protected function _complete_url($line)
 	{
+
 		// Image path
-		if ( preg_match('/!\[([^]]*)\] *\(([^)]*)\)/', $line, $matches))
+		if ( preg_match_all('/!\[([^]]*)\] *\(([^)]*)\)/', $line, $matches, PREG_SET_ORDER))
 		{
-			if (isset($matches[2]))
+			foreach ($matches as $matche)
 			{
-				if (! Valid::url($matches[2]))
+				if (isset($matche[2]))
 				{
-					$replacement = '![' . $matches[1] . '](' . URL::base(TRUE, FALSE) . $this->_folder . $matches[2] . ')';	
-					return preg_replace('/' . preg_quote($matches[0], '/') . '/', $replacement, $line);					
-				}
+					if (! Valid::url($matche[2]))
+					{
+						$replacement = '![' . $matche[1] . '](' . URL::base(TRUE, FALSE) . $this->_folder . $matche[2] . ')';	
+						$line = preg_replace('/' . preg_quote($matche[0], '/') . '/', $replacement, $line);					
+					}
+				}			
+
 			}
 
-		}		// Link
-		else if ( preg_match('/\[([^]]*)\] *\(([^)]*)\)/', $line, $matches))
+			return $line;
+
+		}
+		// Link
+		else if ( preg_match_all('/\[([^]]*)\] *\(([^)]*)\)/', $line, $matches, PREG_SET_ORDER))
 		{
-			if (isset($matches[2]))
+			foreach ($matches as $matche)
 			{
-				// If URL do not contain a abslolute path
-				if ( ! Valid::url($matches[2]))
+				if (isset($matche[2]))
 				{
-					$replacement = '[' . $matches[1] . '](' . URL::base(TRUE, FALSE) . $matches[2] .')';
-					return preg_replace('/' . preg_quote($matches[0], '/') . '/', $replacement, $line);
+					// If URL do not contain a abslolute path
+					if ( ! Valid::url($matche[2]))
+					{
+						$replacement = '[' . $matche[1] . '](' . URL::base(TRUE, FALSE) . $matche[2] .')';
+						$line = preg_replace('/' . preg_quote($matche[0], '/') . '/', $replacement, $line);
+					}
 				}
+				
 			}
+
+			return $line;
 
 		}
 
