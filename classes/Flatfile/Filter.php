@@ -180,7 +180,7 @@ class Flatfile_Filter extends Flatfile_Core {
 	* Markdown formatting
 	*
 	* @param	string		Markdown text
-	* @param	object		Markdown engine
+	* @param	object		Markdown engine (wip)
 	* @return	string		HTML formatted text
 	**/
 	public static function markdown($value, $engine = NULL)
