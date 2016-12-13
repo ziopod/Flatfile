@@ -113,4 +113,30 @@ class Flatfile_Filter extends Flatfile_Core{
 
 		return $result;
 	}
+
+	// https://api.tumblr.com/v2/blog/blogdamientran.tumblr.com/info?api_key=fuiKNFp9vQFvjLNvx4sUwti4Yb5yGutBN4Xh10LXZhhRKjWlV4
+	/**
+	* Json api result form URL
+	**/
+	public static function api($value)
+	{
+		$request = Request::factory($value);
+		$request = Request::factory($request->uri())
+			->query($request->query())
+			->execute()->body();
+		$request = json_decode($request);
+		
+		if ($request->meta->status !== 200)
+		{
+			return array('load' => FALSE);
+		}
+
+		$result = array(
+			'load'		=> TRUE,
+			'meta'		=> $request->meta,
+			'response'	=> $request->response,
+		);
+
+		return $result;
+	}
 }

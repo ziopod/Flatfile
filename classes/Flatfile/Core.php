@@ -186,19 +186,6 @@ class Flatfile_Core {
 		return $tags;
 	}
 
-	// Test with Tumblr api: http://api.tumblr.com/v2/blog/blogdamientran.tumblr.com/posts?id=76514425378&api_key=fuiKNFp9vQFvjLNvx4sUwti4Yb5yGutBN4Xh10LXZhhRKjWlV4
-	/**
-	* Json api result form URL
-	**/
-	public static function json_api($value)
-	{
-		$request = Request::factory($value);
-		$result = Request::factory($request->uri())
-			->query($request->query())
-			->execute()->body();
-		return json_decode($result)->response;
-	}
-
 	/**
 	* Ordering files
 	**/
