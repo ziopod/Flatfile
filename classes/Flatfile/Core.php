@@ -1,8 +1,7 @@
-<?php
+<?php defined('SYSPATH') OR die ('No direct script access');
+
 /**
-* # Flatfile
-*
-* Model for Flatfile 
+* Core model for Flatfile 
 *
 * @package		Flatfile
 * @author		Ziopod <ziopod@gmail.com>
@@ -325,20 +324,19 @@ class Flatfile_Core {
 		// Match on property, terms and other stuffs
 		// TODO
 
-		// Natural sort ordering
-		natsort($this->_files);
-
-		// Ordering files
-		if ($this->_order === 'desc')
-		{
-			$this->_files = array_reverse($this->_files, TRUE);	
-		}
-
 		// if ($multiple === TRUE)
 		if ($multiple === TRUE OR $this->_query)
 		{
 			// Loading multiple Flatfile
 			$result = array();
+			// Natural sort ordering
+			natsort($this->_files);
+
+			// Ordering files
+			if ($this->_order === 'desc')
+			{
+				$this->_files = array_reverse($this->_files, TRUE);	
+			}
 	
 			// Each md file is load in array and returned
 			foreach ($this->_files as $slug => $file)
@@ -571,8 +569,17 @@ class Flatfile_Core {
 			if (strpos($line, self::METAS_SEPARATOR) !== FALSE)
 				break;
 
-			if (($index = strpos($line, ':')) !== FALSE) // Get new property
+			/**
+			* New property are : 
+			*  
+			* - word:
+			* - [space][space][space][space]word:
+			* - [tab]word:
+			**/
+			if (preg_match('/^(|\x20{4}|[\t])\w+:/', $line, $matches)) // Get new property
 			{
+				// Remove ":"
+				$index = strpos($line, ':');
 				$property = trim(strtolower(substr($line, 0, $index)));
 
 				// Preserve filename
