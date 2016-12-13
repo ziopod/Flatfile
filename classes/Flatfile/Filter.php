@@ -9,7 +9,13 @@
 * @license		http://opensource.org/licenses/MIT
 **/
 
-class Flatfile_Filter extends Flatfile_Core{
+class Flatfile_Filter extends Flatfile_Core {
+
+	/**
+	* Store result
+	* @var	array
+	**/
+	protected static $_cache = array();
 
 	/**
 	* Transform string to array of tags
@@ -39,7 +45,14 @@ class Flatfile_Filter extends Flatfile_Core{
 	**/
 	public static function tags($value, $base_url = FALSE)
 	{
-		$result = array(
+		$cache_key = md5($value);
+
+		if (Arr::get(self::$_cache, $cache_key))
+		{
+			return self::$_cache[$cache_key];
+		}
+
+		self::$_cache[$cache_key] = array(
 			'load'	=> FALSE,
 			'items'	=> array(),
 		);
@@ -53,15 +66,15 @@ class Flatfile_Filter extends Flatfile_Core{
 				'slug'	=> URL::title($item, '-', TRUE),
 			);
 			$item['url'] = $base_url . $item['slug'];
-			$result['items'][] = $item;
+			self::$_cache[$cache_key]['items'][] = $item;
 		}
 
-		if ($result['items'])
+		if (self::$_cache[$cache_key]['items'])
 		{
-			$result['load'] = TRUE;
+			self::$_cache[$cache_key]['load'] = TRUE;
 		}
 
-		return $result;
+		return self::$_cache[$cache_key];
 	}
 
 	/**
@@ -82,9 +95,16 @@ class Flatfile_Filter extends Flatfile_Core{
 	**/
 	public static function items($value)
 	{
-		$result = array(
-			'load'	=> FALSE,
-			'items'	=> array(),
+		$cache_key = md5($value);
+
+		if (Arr::get(self::$_cache, $cache_key))
+		{
+			return self::$_cache[$cache_key];
+		}
+
+		self::$_cache[$cache_key] = array(
+			'load'		=> FALSE,
+			'items'	=> array()
 		);
 
 		foreach (explode('-', $value) as $items)
@@ -103,40 +123,85 @@ class Flatfile_Filter extends Flatfile_Core{
 				$new_item[trim($item[0])] = trim($item[1]);
 			}
 
-			$result['items'][] = $new_item;
+			self::$_cache[$cache_key]['items'][] = $new_item;
 		}
 
-		if ($result['items'])
+		if (self::$_cache[$cache_key]['items'])
 		{
-			$result['load'] = TRUE;
+			self::$_cache[$cache_key]['load'] = TRUE;
 		}
 
-		return $result;
+		return self::$_cache[$cache_key];
 	}
 
 	// https://api.tumblr.com/v2/blog/blogdamientran.tumblr.com/info?api_key=fuiKNFp9vQFvjLNvx4sUwti4Yb5yGutBN4Xh10LXZhhRKjWlV4
 	/**
 	* Json api result form URL
+	*
+	* @param	string		API url
+	* @return	array		API response
 	**/
 	public static function api($value)
 	{
-		$request = Request::factory($value);
-		$request = Request::factory($request->uri())
-			->query($request->query())
-			->execute()->body();
-		$request = json_decode($request);
-		
-		if ($request->meta->status !== 200)
+		$cache_key = md5($value);
+
+		if (Arr::get(self::$_cache, $cache_key))
 		{
-			return array('load' => FALSE);
+			return self::$_cache[$cache_key];
 		}
 
-		$result = array(
-			'load'		=> TRUE,
-			'meta'		=> $request->meta,
-			'response'	=> $request->response,
+		self::$_cache[$cache_key] = array(
+			'load'	=> FALSE,
+		);
+		$request = Request::factory($value);
+
+		try
+		{
+			$request = Request::factory($request->uri())
+				->query($request->query())
+				->execute()->body();
+			$request = json_decode($request);
+			self::$_cache[$cache_key] = array(
+				'load'		=> $request->meta->status === 200,
+				'meta'		=> $request->meta,
+				'response'	=> $request->response,
+			);
+		}
+		catch (Request_Exception $e)
+		{
+			self::$_cache[$cache_key] =  array('error' => $e->getMessage());
+			return self::$_cache[$cache_key];
+		}
+
+		return self::$_cache[$cache_key];
+	}
+
+	/**
+	* Markdown formatting
+	*
+	* @param	string		Markdown text
+	* @param	object		Markdown engine
+	* @return	string		HTML formatted text
+	**/
+	public static function markdown($value, $engine = NULL)
+	{
+		$cache_key = md5($value);
+
+		if (Arr::get(self::$_cache, $cache_key))
+		{
+			return self::$_cache[$cache_key];
+		}
+
+		self::$_cache[$cache_key] = array(
+			'load'		=> FALSE,
+			'content'	=> trim(Michelf\MarkdownExtra::defaultTransform($value)),
 		);
 
-		return $result;
+		if (Arr::get(self::$_cache[$cache_key], 'content'))
+		{
+			self::$_cache[$cache_key]['load'] = TRUE;
+		}
+
+		return self::$_cache[$cache_key];
 	}
 }
