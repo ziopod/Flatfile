@@ -203,25 +203,34 @@ class Flatfile_Filter extends Flatfile_Core {
 	* @param	string		Model name
 	* @return	mixte 		Flatfile object or array of Flatfiles objects
 	**/
-	public static function flatfile($value, $model = NULL)
+	public static function flatfile($value, $model_name)
 	{
-		$result = array();
+		$content_index = Inflector::plural($model_name);
+		$result = array(
+			'load'	=> FALSE,
+			$content_index => array(),
+		);
 
 		foreach (explode(', ', $value) as $key => $slug)
 		{
 			try
 			{
-				$model = Flatfile::factory('Author', URL::title($slug));
+				$model = Flatfile::factory($model_name, URL::title($slug));
 
 				if ($model->loaded())
 				{
-					$result[] = $model;
+					$result[$content_index][] = $model;
 				}
 			}
 			catch (Kohana_Exception $e)
 			{
 				Log::instance()->add(Log::WARNING, $e->getMessage());
 			}
+		}
+
+		if ($result[$content_index])
+		{
+			$result['load'] = TRUE;
 		}
 
 		return $result;
