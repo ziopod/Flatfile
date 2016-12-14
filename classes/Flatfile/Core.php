@@ -98,7 +98,6 @@ class Flatfile_Core {
 		return new $model($slug);
 	}
 
-
 	/**
 	* Construct empty model or try to fetch specific file when slug are provided
 	*
@@ -216,11 +215,19 @@ class Flatfile_Core {
 	}
 	
 	/**
-	* retunr loaded state
+	* Return loaded state
 	**/	
 	public function loaded()
 	{
 		return $this->_state === self::STATE_LOADED;
+	}
+
+	/**
+	* Return content part
+	**/
+	public function content()
+	{
+		return $this->content;
 	}
 
 	/**
