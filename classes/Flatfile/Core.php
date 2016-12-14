@@ -78,7 +78,7 @@ class Flatfile_Core {
 	const CONTENTDIR = 'content';
 	const FILE_META_SEPARATOR = '_';
 	const METAS_SEPARATOR = '---';
-	const STATE_LOADED = 'loaded';
+	const STATE_LOADED = 10;
 
 	/**
 	* Return a model of the model na provided. You can spacify an file 
