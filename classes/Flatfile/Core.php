@@ -70,9 +70,15 @@ class Flatfile_Core {
 	**/
 	protected $_data = array();
 
+	/**
+	* @var	string	State of flafile
+	**/
+	protected $_state;
+
 	const CONTENTDIR = 'content';
 	const FILE_META_SEPARATOR = '_';
 	const METAS_SEPARATOR = '---';
+	const STATE_LOADED = 'loaded';
 
 	/**
 	* Return a model of the model na provided. You can spacify an file 
@@ -187,6 +193,7 @@ class Flatfile_Core {
 		$this->_limit = $limit;
 		return $this;
 	}
+
 	/**
 	* Find file an load data
 	**/
@@ -208,6 +215,14 @@ class Flatfile_Core {
 		// return $this;
 	}
 	
+	/**
+	* retunr loaded state
+	**/	
+	public function loaded()
+	{
+		return $this->_state === self::STATE_LOADED;
+	}
+
 	/**
 	*  Quering
 	**/
@@ -382,6 +397,8 @@ class Flatfile_Core {
 				return NULL;
 			}
 
+			// Change State
+			$this->_state = self::STATE_LOADED;
 			// Store filename in _data array
 			$this->filename = $this->_filename;
 			// Store slug in _data array
@@ -759,10 +776,6 @@ class Flatfile_Core {
 	**/
 	public function __isset($key)
 	{
-		// STATE_LOADED
-		// if ($this->_loaded !== TRUE)
-		// 	$this->find();
-
 		return isset($this->_data[$key]);
 	}
 

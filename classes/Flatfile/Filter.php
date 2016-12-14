@@ -192,16 +192,7 @@ class Flatfile_Filter extends Flatfile_Core {
 			return self::$_cache[$cache_key];
 		}
 
-		self::$_cache[$cache_key] = array(
-			'load'		=> FALSE,
-			'content'	=> trim(Michelf\MarkdownExtra::defaultTransform($value)),
-		);
-
-		if (Arr::get(self::$_cache[$cache_key], 'content'))
-		{
-			self::$_cache[$cache_key]['load'] = TRUE;
-		}
-
+		self::$_cache[$cache_key] = trim(Michelf\MarkdownExtra::defaultTransform($value));
 		return self::$_cache[$cache_key];
 	}
 
@@ -221,7 +212,8 @@ class Flatfile_Filter extends Flatfile_Core {
 			try
 			{
 				$model = Flatfile::factory('Author', URL::title($slug));
-				if ($model)
+
+				if ($model->loaded())
 				{
 					$result[] = $model;
 				}
