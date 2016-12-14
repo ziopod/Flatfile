@@ -139,12 +139,6 @@ class Flatfile_Core {
 
 	}
 
-	// Return content
-	public function content()
-	{
-		return trim($this->content);
-	}
-
 	/**
 	* Define filter
 	* **Inspire by Kohana ORM::run_filter()**
