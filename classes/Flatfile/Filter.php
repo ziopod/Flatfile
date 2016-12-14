@@ -54,22 +54,22 @@ class Flatfile_Filter extends Flatfile_Core {
 
 		self::$_cache[$cache_key] = array(
 			'load'	=> FALSE,
-			'items'	=> array(),
+			'tags'	=> array(),
 		);
 
 		$base_url = ($base_url) ? $base_url : URL::base(TRUE, TRUE) . 'tag/';
 
-		foreach (explode(', ', $value) as $item)
+		foreach (explode(', ', $value) as $tag)
 		{
-			$item = array(
-				'name'	=> $item,
-				'slug'	=> URL::title($item, '-', TRUE),
+			$tag = array(
+				'name'	=> $tag,
+				'slug'	=> URL::title($tag, '-', TRUE),
 			);
-			$item['url'] = $base_url . $item['slug'];
-			self::$_cache[$cache_key]['items'][] = $item;
+			$tag['url'] = $base_url . $tag['slug'];
+			self::$_cache[$cache_key]['tags'][] = $tag;
 		}
 
-		if (self::$_cache[$cache_key]['items'])
+		if (self::$_cache[$cache_key]['tags'])
 		{
 			self::$_cache[$cache_key]['load'] = TRUE;
 		}
