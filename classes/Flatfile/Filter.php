@@ -215,7 +215,7 @@ class Flatfile_Filter extends Flatfile_Core {
 		{
 			try
 			{
-				$model = Flatfile::factory($model_name, URL::title($slug));
+				$model = Flatfile::factory(ucfirst($model_name), URL::title($slug));
 
 				if ($model->loaded())
 				{
