@@ -592,7 +592,7 @@ class Flatfile_Core {
 
 			// Store property value
 			if (isset($property))
-				$this->$property = $newline;
+				$this->$property = rtrim($newline);
 		}
 
 		// Close file
