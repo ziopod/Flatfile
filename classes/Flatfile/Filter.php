@@ -205,11 +205,7 @@ class Flatfile_Filter extends Flatfile_Core {
 	**/
 	public static function flatfile($value, $model_name)
 	{
-		$content_index = Inflector::plural($model_name);
-		$result = array(
-			'load'	=> FALSE,
-			$content_index => array(),
-		);
+		$result = array();
 
 		foreach (explode(', ', $value) as $key => $slug)
 		{
@@ -219,7 +215,7 @@ class Flatfile_Filter extends Flatfile_Core {
 
 				if ($model->loaded())
 				{
-					$result[$content_index][] = $model;
+					$result[] = $model;
 				}
 			}
 			catch (Kohana_Exception $e)
@@ -228,9 +224,9 @@ class Flatfile_Filter extends Flatfile_Core {
 			}
 		}
 
-		if ($result[$content_index])
+		if (count($result) === 1)
 		{
-			$result['load'] = TRUE;
+			$result = array_shift($result);
 		}
 
 		return $result;
