@@ -107,7 +107,7 @@ class Flatfile_Filter extends Flatfile_Core {
 			'items'	=> array()
 		);
 
-		foreach (explode('-', $value) as $items)
+		foreach (explode(' - ', $value) as $items)
 		{
 			$new_item = array();
 
