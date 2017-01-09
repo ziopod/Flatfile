@@ -255,7 +255,7 @@ class Flatfile_Core {
 			// Search in value?
 			if ( ! empty($operator))
 			{
-				$value = isset($this->_data[$property]) ? $this->_data[$property] : NULL;
+				$value = isset($this->_data[$property]) ? trim($this->_data[$property]) : NULL;
 
 				// Integer
 				if (is_int($term))
