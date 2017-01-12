@@ -43,7 +43,7 @@ class Flatfile_Filter extends Flatfile_Core {
 	* @param	mixte	TRUE | NULL | string. Default base url, none or specific base url
 	* @return	array	Array of elements
 	**/
-	public static function tags($value, $base_url = FALSE)
+	public static function tags($value, $base_url = FALSE, $separator = ", ")
 	{
 		$cache_key = md5($value);
 
@@ -59,8 +59,13 @@ class Flatfile_Filter extends Flatfile_Core {
 
 		$base_url = ($base_url) ? $base_url : URL::base(TRUE, TRUE) . 'tag/';
 
-		foreach (explode(', ', $value) as $tag)
+		foreach (explode($separator, $value) as $tag)
 		{
+			  if ( ! $tag)
+			  {
+				continue;
+			  }
+
 			$tag = array(
 				'name'	=> $tag,
 				'slug'	=> URL::title($tag, '-', TRUE),
