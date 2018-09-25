@@ -1,0 +1,3 @@
+# Project specific
+composer.lock
+vendor/
