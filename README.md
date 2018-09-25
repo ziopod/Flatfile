@@ -1,6 +1,6 @@
 # Flatfile
 
-A simple Flatfile ORM for Kohana
+A simple Flatfile ORM
 
 ## How to use it
 

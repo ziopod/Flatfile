@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die ('No direct script access');
+<?php
 
 /**
 * Core model for Flatfile 
@@ -123,7 +123,8 @@ class Flatfile_Core {
 		if ($classname !== 'Flatfile')
 		{
 			$this->_type = strtolower(substr($classname, 6)); // Remove model_ to the classe name	
-			$folder = Inflector::plural(str_replace('_', '/', $this->_type)) . DIRECTORY_SEPARATOR;
+			$folder = str_replace('_', '/', $this->_type) . DIRECTORY_SEPARATOR;
+			//$folder = Inflector::plural(str_replace('_', '/', $this->_type)) . DIRECTORY_SEPARATOR;
 		}
 
 		// Store folder path
@@ -132,7 +133,8 @@ class Flatfile_Core {
 		if ($sub_folders)
 			$this->_folder .= $sub_folders . DIRECTORY_SEPARATOR;
 
-		$this->_path = DOCROOT . $this->_folder;
+		// $this->_path = DOCROOT . $this->_folder;
+		$this->_path = $this->_folder;
 
 		// Trying to load Flatile if slug is provided
 		if ($slug != NULL)

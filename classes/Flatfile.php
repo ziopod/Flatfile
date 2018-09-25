@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die ('No direct script access');
+<?php
 
 /**
 * You can replace this class with your own stuffs
