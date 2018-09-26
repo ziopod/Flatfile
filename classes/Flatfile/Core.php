@@ -9,9 +9,6 @@
 * @license		http://opensource.org/licenses/MIT
 **/
 
-use Michelf\MarkdownExtra;
-// use Michelf\SmartyPantsTypographer;
-
 class Flatfile_Core {
 	
 	/**
