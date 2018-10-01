@@ -9,4 +9,6 @@
 * @license		http://opensource.org/licenses/MIT
 **/
 
-class Flatfile extends Flatfile_Core {}
+class Flatfile extends Flatfile_Core
+{
+}
