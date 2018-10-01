@@ -3,4 +3,6 @@
 require 'classes/Flatfile.php';
 use PHPUnit\Framework\TestCase;
 
-class FlatfileTest extends TestCase {}
+class FlatfileTest extends TestCase
+{
+}
