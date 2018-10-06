@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<ruleset name="PSR-2">
+    <description>PSR-2</description>
+
+    <file>classes</file>
+    <file>tests</file>
+
+    <exclude-pattern>*/Standards/*/Tests/*\.(inc|css|js)</exclude-pattern>
+
+    <arg name="basepath" value="."/>
+    <arg name="colors" />
+    <arg name="parallel" value="75" />
+    <arg value="np"/>
+
+    <!-- Don't hide tokenizer exceptions -->
+    <rule ref="Internal.Tokenizer.Exception">
+        <type>error</type>
+    </rule>
+
+    <!-- Include the whole PSR2 standard -->
+    <rule ref="PSR2">
+        <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace" />
+        <exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps" />
+        <exclude name="Squiz.Classes.ValidClassName.NotCamelCaps" />
+    </rule>
+</ruleset>
